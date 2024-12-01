@@ -5,41 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vegan Hypertrophy</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-        h1 { color: #2E8B57; }
-        a { color: #008CBA; text-decoration: none; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #2E8B57;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background: #f4f4f4;
+        }
+        .hero h1 {
+            font-size: 36px;
+            color: #2E8B57;
+        }
+        .banner {
+            text-align: center;
+            padding: 30px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 600px;
+            background: #e0f7fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .banner h2 {
+            font-size: 24px;
+            margin: 0 0 10px;
+        }
+        .banner a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #2E8B57;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #2E8B57;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div style="text-align: center; background: url('banner.jpg') no-repeat center center/cover; padding: 100px 20px; color: white;">
-    <h1>Vegan Hypertrophy</h1>
-    <p>Your ultimate guide to plant-based strength and fitness</p>
-    <a href="blog.html" style="padding: 10px 20px; background: #2E8B57; color: white; text-decoration: none;">Explore the Blog</a>
-    <a href="resources.html" style="padding: 10px 20px; background: #008CBA; color: white; text-decoration: none;">Find Resources</a>
+    <!-- Navigation Bar -->
     <nav>
-    <ul style="list-style: none; padding: 0; display: flex; justify-content: center; background: #2E8B57; margin: 0;">
-        <li style="margin: 0 15px;"><a href="index.html" style="color: white; text-decoration: none;">Home</a></li>
-        <li style="margin: 0 15px;"><a href="blog.html" style="color: white; text-decoration: none;">Blog</a></li>
-        <li style="margin: 0 15px;"><a href="resources.html" style="color: white; text-decoration: none;">Resources</a></li>
-        <li style="margin: 0 15px;"><a href="contact.html" style="color: white; text-decoration: none;">Contact</a></li>
-    </ul>
-</nav>
-    <section style="padding: 20px; text-align: center;">
-    <h2>Why Vegan Hypertrophy?</h2>
-    <p>Discover how plant-based nutrition fuels peak performance and sustainable fitness. We provide meal plans, workout guides, and more.</p>
-</section>
-    <section style="padding: 20px;">
-    <h2>Recent Articles</h2>
-    <ul style="list-style: none; padding: 0; text-align: left; margin: auto; width: fit-content;">
-        <li><a href="#">5 High-Protein Vegan Meals for Gains</a></li>
-        <li><a href="#">How to Bulk Up on a Plant-Based Diet</a></li>
-        <li><a href="#">Top 10 Vegan Supplements for Strength</a></li>
-    </ul>
-</section>
-        <footer style="background: #2E8B57; color: white; text-align: center; padding: 10px;">
-    <p>&copy; 2024 Vegan Hypertrophy. All rights reserved.</p>
-    <a href="#" style="color: white; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
-    <a href="#" style="color: white; text-decoration: none; margin: 0 10px;">Terms of Use</a>
-</footer>
+        <ul>
+            <li><a href="basic-principles.html">Basic Principles</a></li>
+            <li><a href="calories-in.html">Calories In</a></li>
+            <li><a href="calories-out.html">Calories Out</a></li>
+            <li><a href="hackz.html">Hackz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Science-driven framework to maximize potential and minimize effort</h1>
+    </div>
+
+    <!-- Banners -->
+    <div class="banner">
+        <h2>Basic Principles</h2>
+        <a href="basic-principles.html">See More</a>
+    </div>
+    <div class="banner">
+        <h2>Calories In</h2>
+        <a href="calories-in.html">See More</a>
+    </div>
+    <div class="banner">
+        <h2>Calories Out</h2>
+        <a href="calories-out.html">See More</a>
+    </div>
+    <div class="banner">
+        <h2>Hackz</h2>
+        <a href="hackz.html">See More</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Vegan Hypertrophy. All rights reserved.</p>
+    </footer>
 </body>
 </html>
