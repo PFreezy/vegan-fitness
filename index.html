@@ -5,69 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vegan Hypertrophy</title>
     <style>
+        /* General Reset */
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            color: white;
         }
+
+        /* Header Navigation Bar */
         nav {
-            background-color: #2E8B57;
-            padding: 10px 0;
-            text-align: center;
+            background-color: #2E8B57; /* Dark Green */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
         nav ul {
             list-style: none;
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
+            gap: 20px;
         }
         nav li {
-            margin: 0 15px;
+            display: inline;
         }
         nav a {
-            color: white;
             text-decoration: none;
+            color: white;
+            font-weight: bold;
             font-size: 16px;
         }
+
+        /* Hero Section */
         .hero {
+            background: url('background-image.jpg') no-repeat center center/cover;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 50px 20px;
-            background: #f4f4f4;
+            padding: 20px;
         }
         .hero h1 {
-            font-size: 36px;
-            color: #2E8B57;
+            font-size: 48px;
+            line-height: 1.2;
+            margin: 0;
         }
-        .banner {
-            text-align: center;
-            padding: 30px;
-            margin: 20px auto;
-            width: 90%;
-            max-width: 600px;
-            background: #e0f7fa;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .hero p {
+            font-size: 20px;
+            margin: 20px 0;
         }
-        .banner h2 {
-            font-size: 24px;
-            margin: 0 0 10px;
-        }
-        .banner a {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #2E8B57;
-            color: white;
+        .hero a {
             text-decoration: none;
-            border-radius: 5px;
-        }
-        footer {
-            background-color: #2E8B57;
+            background-color: #008CBA; /* Accent Blue */
             color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 10px;
+            display: inline-block;
+        }
+        .hero a:hover {
+            background-color: #005f73; /* Darker Blue */
         }
     </style>
 </head>
@@ -84,30 +85,10 @@
 
     <!-- Hero Section -->
     <div class="hero">
-        <h1>Science-driven framework to maximize potential and minimize effort</h1>
+        <h1>Science-driven framework<br>to maximize potential and minimize effort</h1>
+        <p>Leading the way in plant-based fitness and nutrition.</p>
+        <a href="basic-principles.html">Learn More</a>
+        <a href="calories-in.html">Get Started</a>
     </div>
-
-    <!-- Banners -->
-    <div class="banner">
-        <h2>Basic Principles</h2>
-        <a href="basic-principles.html">See More</a>
-    </div>
-    <div class="banner">
-        <h2>Calories In</h2>
-        <a href="calories-in.html">See More</a>
-    </div>
-    <div class="banner">
-        <h2>Calories Out</h2>
-        <a href="calories-out.html">See More</a>
-    </div>
-    <div class="banner">
-        <h2>Hackz</h2>
-        <a href="hackz.html">See More</a>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Vegan Hypertrophy. All rights reserved.</p>
-    </footer>
 </body>
 </html>
