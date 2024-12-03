@@ -15,6 +15,34 @@
             background-color: #f4f4f4;
         }
 
+        /* Navigation Bar */
+        nav {
+            background: linear-gradient(to bottom, #2E8B57, black); /* Green to Black Gradient */
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Adds spacing between links */
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 20px; /* Larger font size */
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #A5D6A7; /* Lighter green for hover effect */
+        }
+
         /* Header Styling */
         header {
             background-color: #2E8B57;
@@ -88,6 +116,17 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="basic-principles.html">Basic Principles</a></li>
+            <li><a href="calories-in.html">Calories In</a></li>
+            <li><a href="calories-out.html">Calories Out</a></li>
+            <li><a href="hackz.html">Hackz</a></li>
+        </ul>
+    </nav>
+
     <!-- Header -->
     <header>
         <h1>Basic Principles</h1>
@@ -100,7 +139,7 @@
         <section class="articles-section">
             <!-- Article Card 1 -->
             <div class="article-card">
-                <img src="placeholder-image.jpg" alt="Plant-based nutrition">
+                <img src="images/plant-based-nutrition.jpg" alt="Plant-based nutrition">
                 <div class="article-card-content">
                     <h3>Plant-Based Nutrition: The Basics</h3>
                     <p>Learn the essentials of building a plant-based diet to fuel your gains.</p>
@@ -110,7 +149,7 @@
 
             <!-- Article Card 2 -->
             <div class="article-card">
-                <img src="placeholder-image.jpg" alt="Macronutrient breakdown">
+                <img src="images/macronutrient-chart.jpg" alt="Macronutrient breakdown">
                 <div class="article-card-content">
                     <h3>Understanding Macronutrients</h3>
                     <p>A deep dive into how protein, carbs, and fats contribute to muscle growth.</p>
@@ -120,7 +159,7 @@
 
             <!-- Article Card 3 -->
             <div class="article-card">
-                <img src="placeholder-image.jpg" alt="Meal planning">
+                <img src="images/meal-planning.jpg" alt="Meal planning">
                 <div class="article-card-content">
                     <h3>Meal Planning for Gains</h3>
                     <p>Discover how to structure your meals to optimize performance and recovery.</p>
