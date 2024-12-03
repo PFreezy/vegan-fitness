@@ -1,70 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="description" content="Vegan Hypertrophy - Science-driven framework for maximizing fitness and nutrition potential.">
-<meta name="keywords" content="vegan, hypertrophy, fitness, plant-based, nutrition, calories">
-<meta name="author" content="Vegan Hypertrophy">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Principles</title>
+    <title>Basic Principles | Vegan Hypertrophy</title>
+    <meta name="description" content="Explore the foundational principles of vegan hypertrophy, including plant-based nutrition, meal planning, and macronutrient breakdowns.">
+    <meta name="keywords" content="vegan, hypertrophy, plant-based fitness, nutrition, macronutrients, vegan meal planning, muscle growth">
+    <meta name="author" content="Vegan Hypertrophy">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
         }
+
+        /* Header Styling */
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 10px 20px;
+            padding: 20px;
             text-align: center;
         }
+
+        /* Main Section Styling */
+        main {
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2E8B57;
+        }
+
+        .articles-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        /* Article Card Styling */
+        .article-card {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .article-card-content {
+            padding: 15px;
+        }
+
+        .article-card h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #2E8B57;
+        }
+
+        .article-card p {
+            margin: 10px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .article-card a {
+            text-decoration: none;
+            color: #008CBA;
+            font-weight: bold;
+        }
+
         footer {
             background-color: #2E8B57;
             color: white;
             text-align: center;
             padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
- <nav>
-    <ul style="
-        list-style: none; 
-        margin: 0; 
-        padding: 0; 
-        display: flex; 
-        justify-content: center; 
-        padding: 20px 0; 
-        background: linear-gradient(to bottom, #2E8B57, black); /* Green to Black Gradient */
-        color: white;
-    ">
-        <li style="margin: 0 15px;">
-            <a href="index.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Home</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="basic-principles.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Basic Principles</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="calories-in.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Calories In</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="calories-out.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Calories Out</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="hackz.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Hackz</a>
-        </li>
-    </ul>
-</nav>
+    <!-- Header -->
     <header>
         <h1>Basic Principles</h1>
+        <p>Explore the foundational principles for achieving vegan hypertrophy success.</p>
     </header>
+
+    <!-- Main Content -->
     <main>
-        <p>Here you’ll learn about the foundational principles of vegan hypertrophy.</p>
+        <h1>Latest Articles</h1>
+        <section class="articles-section">
+            <!-- Article Card 1 -->
+            <div class="article-card">
+                <img src="placeholder-image.jpg" alt="Plant-based nutrition">
+                <div class="article-card-content">
+                    <h3>Plant-Based Nutrition: The Basics</h3>
+                    <p>Learn the essentials of building a plant-based diet to fuel your gains.</p>
+                    <a href="article1.html">Read More</a>
+                </div>
+            </div>
+
+            <!-- Article Card 2 -->
+            <div class="article-card">
+                <img src="placeholder-image.jpg" alt="Macronutrient breakdown">
+                <div class="article-card-content">
+                    <h3>Understanding Macronutrients</h3>
+                    <p>A deep dive into how protein, carbs, and fats contribute to muscle growth.</p>
+                    <a href="article2.html">Read More</a>
+                </div>
+            </div>
+
+            <!-- Article Card 3 -->
+            <div class="article-card">
+                <img src="placeholder-image.jpg" alt="Meal planning">
+                <div class="article-card-content">
+                    <h3>Meal Planning for Gains</h3>
+                    <p>Discover how to structure your meals to optimize performance and recovery.</p>
+                    <a href="article3.html">Read More</a>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <!-- Footer -->
     <footer>
         &copy; 2024 Vegan Hypertrophy. All rights reserved.
     </footer>
