@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declaration of Intent</title>
+    <meta name="description" content="Learn the essentials of building a plant-based diet to fuel your gains and optimize performance.">
+    <meta name="keywords" content="vegan, plant-based nutrition, muscle growth, fitness, vegan diet">
+    <meta name="author" content="Vegan Hypertrophy">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        nav {
+            background: linear-gradient(to bottom, #2E8B57, black);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #A5D6A7;
+        }
+
+        header {
+            background-color: #2E8B57;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #2E8B57;
+        }
+
+        footer {
+            background-color: #2E8B57;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="basic-principles.html">Basic Principles</a></li>
+            <li><a href="calories-in.html">Calories In</a></li>
+            <li><a href="calories-out.html">Calories Out</a></li>
+            <li><a href="hackz.html">Hackz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>Declaration of Intent</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <h2>Introduction</h2>
+        <p>The hardest part of any problem is properly defining the problem. The solution is the easy part. The purpose of these rants is to supply as many people as possible with access to information to improve health, wellness, and longevity.</p>
+        <ul>
+            <li>This intended audience leans toward beginners, novices, and deconditioned individuals</li>
+            <li>Dietary focus will be on vegan and plant-based nutrition options</li>
+            <li>No advice given here consitiutes a patient-client relationship</li>
+        </ul>
+
+        <h2>Why Protein is Key</h2>
+        <p>Protein is essential for muscle repair and growth. In a vegan diet, you can get high-quality protein from foods like lentils, chickpeas, tofu, and tempeh.</p>
+
+        <h2>Balancing Macronutrients</h2>
+        <p>A balanced diet includes the right proportion of protein, carbohydrates, and fats. Focus on whole, nutrient-dense foods to get the energy you need.</p>
+
+        <h2>Top Vegan Foods for Muscle Growth</h2>
+        <p>Foods like quinoa, seitan, and nuts are packed with protein and nutrients. Combine these with a variety of fruits and vegetables for a well-rounded diet.</p>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 Vegan Hypertrophy. All rights reserved.
+    </footer>
+</body>
+</html>
