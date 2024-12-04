@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="description" content="Vegan Hypertrophy - Science-driven framework for maximizing fitness and nutrition potential.">
-<meta name="keywords" content="vegan, hypertrophy, fitness, plant-based, nutrition, calories">
-<meta name="author" content="Vegan Hypertrophy">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vegan Hypertrophy</title>
+    <meta name="description" content="Vegan Hypertrophy: Science-driven framework to maximize your fitness and nutrition potential with plant-based strategies.">
+    <meta name="keywords" content="vegan, hypertrophy, fitness, plant-based nutrition, muscle growth, calories, meal planning, fitness hacks">
+    <meta name="author" content="Vegan Hypertrophy">
     <style>
-        /* General Reset */
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            color: white;
-            background-color: black;
+            padding: 0;
+            background-color: #f4f4f4;
         }
 
         /* Navigation Bar */
         nav {
-            background-color: #2E8B57; /* Dark Green */
+            background: linear-gradient(to bottom, #2E8B57, black);
             padding: 20px 0;
             position: sticky;
             top: 0;
@@ -30,57 +29,95 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            gap: 40px; /* Adds spacing between links */
-        }
-        nav li {
-            display: inline;
+            gap: 40px;
         }
         nav a {
             text-decoration: none;
             color: white;
-            font-size: 20px; /* Larger font size */
+            font-size: 20px;
             font-weight: bold;
             text-transform: uppercase;
             transition: color 0.3s;
         }
         nav a:hover {
-            color: #A5D6A7; /* Lighter green for hover effect */
+            color: #A5D6A7;
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(to bottom, black, #2E8B57); /* Black to Dark Green */
+            background: linear-gradient(to bottom, black, #2E8B57);
             height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            color: white;
         }
         .hero h1 {
-            font-size: 56px; /* Larger heading */
+            font-size: 60px;
             font-weight: bold;
-            line-height: 1.3;
-            margin: 0;
         }
         .hero p {
-            font-size: 22px; /* Larger subheading */
+            font-size: 24px;
             margin: 20px 0;
         }
         .hero a {
             text-decoration: none;
-            background-color: #008CBA; /* Accent Blue */
+            background-color: #008CBA;
             color: white;
-            padding: 15px 40px; /* Larger button size */
+            padding: 15px 40px;
             border-radius: 5px;
             font-size: 18px;
-            margin: 10px;
-            display: inline-block;
+            margin: 10px 0;
             transition: background-color 0.3s;
         }
         .hero a:hover {
-            background-color: #005f73; /* Darker blue hover effect */
+            background-color: #005f73;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 40px 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        section h2 {
+            font-size: 28px;
+            color: #2E8B57;
+            text-align: center;
+        }
+        section p {
+            text-align: center;
+            color: #555;
+            margin: 20px 0;
+        }
+        section a {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            background-color: #008CBA;
+            padding: 10px 20px;
+            margin: 10px auto;
+            width: fit-content;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        section a:hover {
+            background-color: #005f73;
+        }
+
+        footer {
+            background-color: #2E8B57;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -88,6 +125,7 @@
     <!-- Navigation Bar -->
     <nav>
         <ul>
+            <li><a href="index.html">Home</a></li>
             <li><a href="basic-principles.html">Basic Principles</a></li>
             <li><a href="calories-in.html">Calories In</a></li>
             <li><a href="calories-out.html">Calories Out</a></li>
@@ -97,13 +135,40 @@
 
     <!-- Hero Section -->
     <div class="hero">
-        <h1>Science-Driven Framework<br>to Maximize Potential and Minimize Effort</h1>
-        <p>Leading the way in plant-based fitness and nutrition.</p>
+        <h1>Vegan Hypertrophy</h1>
+        <p>Science-driven framework to maximize potential and minimize effort.</p>
         <a href="basic-principles.html">Learn More</a>
         <a href="calories-in.html">Get Started</a>
     </div>
-    <footer style="background-color: #2E8B57; color: white; text-align: center; padding: 10px; position: relative; bottom: 0; width: 100%;">
-    &copy; 2024 Vegan Hypertrophy. All rights reserved.
-</footer>
+
+    <!-- Sections -->
+    <section>
+        <h2>Basic Principles</h2>
+        <p>Explore the foundational principles for vegan hypertrophy, including nutrition, meal planning, and macronutrients.</p>
+        <a href="basic-principles.html">Read More</a>
+    </section>
+
+    <section>
+        <h2>Calories In</h2>
+        <p>Learn how to optimize your caloric intake for muscle growth, performance, and recovery on a plant-based diet.</p>
+        <a href="calories-in.html">Read More</a>
+    </section>
+
+    <section>
+        <h2>Calories Out</h2>
+        <p>Understand how to burn calories effectively with tailored workouts and daily activities that align with your goals.</p>
+        <a href="calories-out.html">Read More</a>
+    </section>
+
+    <section>
+        <h2>Hackz</h2>
+        <p>Discover science-backed hacks to enhance your fitness journey, from supplements to timing your workouts and meals.</p>
+        <a href="hackz.html">Read More</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 Vegan Hypertrophy. All rights reserved.
+    </footer>
 </body>
 </html>
