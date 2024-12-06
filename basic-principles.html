@@ -71,11 +71,20 @@
 
         /* Article Card Styling */
         .article-card {
+            display: block; /* Make the entire card clickable */
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit text color */
             background-color: white;
             border: 1px solid #ccc;
             border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .article-card:hover {
+            transform: scale(1.03); /* Slight zoom effect on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .article-card img {
@@ -98,12 +107,6 @@
             margin: 10px 0;
             color: #555;
             font-size: 14px;
-        }
-
-        .article-card a {
-            text-decoration: none;
-            color: #008CBA;
-            font-weight: bold;
         }
 
         footer {
@@ -138,34 +141,31 @@
         <h1>Latest Articles</h1>
         <section class="articles-section">
             <!-- Article Card 1 -->
-            <div class="article-card">
+            <a href="declaration-of-intent.html" class="article-card">
                 <img src="declaration-of-intent-image.jpg" alt="si vis pacem, para bellum">
                 <div class="article-card-content">
                     <h3>Declaration of Intent</h3>
-                    <p>Learn the essentials of building a plant-based diet to fuel your gains.</p>
-                    <a href="declaration-of-intent.html">Read More</a>
+                    <p>si vis pacem, para bellum</p>
                 </div>
-            </div>
+            </a>
 
             <!-- Article Card 2 -->
-            <div class="article-card">
+            <a href="harajuku-moment.html" class="article-card">
                 <img src="harajuku-moment.jpg" alt="harajuku-moment">
                 <div class="article-card-content">
                     <h3>The Harajuku Moment</h3>
                     <p>The decision to change.</p>
-                    <a href="harajuku-moment.html">Read More</a>
                 </div>
-            </div>
+            </a>
 
             <!-- Article Card 3 -->
-            <div class="article-card">
+            <a href="article3.html" class="article-card">
                 <img src="images/meal-planning.jpg" alt="Meal planning">
                 <div class="article-card-content">
                     <h3>Meal Planning for Gains</h3>
                     <p>Discover how to structure your meals to optimize performance and recovery.</p>
-                    <a href="article3.html">Read More</a>
                 </div>
-            </div>
+            </a>
         </section>
     </main>
 
