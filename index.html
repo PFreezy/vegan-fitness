@@ -102,48 +102,45 @@
 }
 
         /* Section Styling */
-        section {
-            padding: 40px 20px;
-            margin: 20px auto;
-            max-width: 1200px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        section h2 {
-            font-size: 28px;
-            color: #2E8B57;
-            text-align: center;
-        }
-        section p {
-            text-align: center;
-            color: #555;
-            margin: 20px 0;
-        }
-        section a {
-            display: block;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            background-color: #008CBA;
-            padding: 10px 20px;
-            margin: 10px auto;
-            width: fit-content;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        section a:hover {
-            background-color: #005f73;
-        }
+ section {
+    padding: 40px 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, #e9f7ef, #c8e6c9); /* Light green gradient */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #333; /* Dark text for contrast */
+    text-align: center;
+    overflow: hidden;
+}
 
-        footer {
-            background-color: #2E8B57;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
-        }
+section h2 {
+    font-size: 28px;
+    color: #2E8B57; /* Bold green header */
+    margin-bottom: 15px;
+}
+
+section p {
+    font-size: 16px;
+    color: #555; /* Subtle text for readability */
+    margin-bottom: 20px;
+}
+
+section a {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #008CBA; /* Call-to-action button color */
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+section a:hover {
+    background-color: #005f73;
+}
     </style>
 </head>
 <body>
