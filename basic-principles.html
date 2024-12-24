@@ -18,7 +18,7 @@
         /* Navigation Bar */
         nav {
             background: linear-gradient(to bottom, #2E8B57, black); /* Green to Black Gradient */
-            padding: 20px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -29,15 +29,17 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            gap: 40px; /* Adds spacing between links */
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 10px;
         }
         nav a {
             text-decoration: none;
             color: white;
-            font-size: 20px; /* Larger font size */
+            font-size: 16px; /* Adjust for mobile */
             font-weight: bold;
             text-transform: uppercase;
             transition: color 0.3s;
+            padding: 5px 10px; /* Touch-friendly */
         }
         nav a:hover {
             color: #A5D6A7; /* Lighter green for hover effect */
@@ -47,26 +49,31 @@
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
+        }
+
+        header p {
+            font-size: 16px; /* Smaller for mobile */
         }
 
         /* Main Section Styling */
         main {
-            padding: 20px;
+            padding: 15px;
         }
 
         h1 {
             text-align: center;
             color: #2E8B57;
+            font-size: 24px; /* Adjust for mobile */
         }
 
         .articles-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjust column size for mobile */
+            gap: 10px;
             margin: 20px auto;
-            max-width: 1200px;
+            max-width: 90%; /* Shrink for mobile */
         }
 
         /* Article Card Styling */
@@ -89,24 +96,24 @@
 
         .article-card img {
             width: 100%;
-            height: 200px;
+            height: 120px; /* Adjust for mobile */
             object-fit: cover;
         }
 
         .article-card-content {
-            padding: 15px;
+            padding: 10px;
         }
 
         .article-card h3 {
             margin: 0;
-            font-size: 20px;
+            font-size: 16px; /* Adjust for mobile */
             color: #2E8B57;
         }
 
         .article-card p {
-            margin: 10px 0;
+            margin: 5px 0;
             color: #555;
-            font-size: 14px;
+            font-size: 12px; /* Adjust for mobile */
         }
 
         footer {
@@ -114,7 +121,40 @@
             color: white;
             text-align: center;
             padding: 10px;
-            margin-top: 20px;
+            font-size: 14px; /* Adjust for mobile */
+        }
+
+        /* Media Queries for Larger Screens */
+        @media (min-width: 768px) {
+            nav ul {
+                gap: 20px; /* Adjust spacing for larger screens */
+            }
+            nav a {
+                font-size: 18px;
+            }
+            header {
+                padding: 20px;
+            }
+            header p {
+                font-size: 18px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            .articles-section {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger cards */
+                gap: 20px;
+                max-width: 1200px; /* Wider content area */
+            }
+            .article-card img {
+                height: 200px; /* Taller images */
+            }
+            .article-card h3 {
+                font-size: 20px;
+            }
+            .article-card p {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -140,7 +180,7 @@
     <main>
         <h1>Latest Articles</h1>
         <section class="articles-section">
-            <!-- Article Card 1 -->
+            <!-- Article Cards -->
             <a href="declaration-of-intent.html" class="article-card">
                 <img src="declaration-of-intent-image.jpg" alt="si vis pacem, para bellum">
                 <div class="article-card-content">
@@ -148,8 +188,6 @@
                     <p>si vis pacem, para bellum</p>
                 </div>
             </a>
-
-            <!-- Article Card 2 -->
             <a href="harajuku-moment.html" class="article-card">
                 <img src="harajuku-moment.jpg" alt="harajuku-moment">
                 <div class="article-card-content">
@@ -157,8 +195,6 @@
                     <p>The decision to change.</p>
                 </div>
             </a>
-
-            <!-- Article Card 3 -->
             <a href="the-holy-trinity.html" class="article-card">
                 <img src="the-holy-trinity.jpg" alt="The Holy Trinity">
                 <div class="article-card-content">
@@ -166,8 +202,6 @@
                     <p>All you need to know.</p>
                 </div>
             </a>
-
-            <!-- Article Card 4 -->
             <a href="controlling-weight.html" class="article-card">
                 <img src="controlling-weight.jpg" alt="Controlling Weight">
                 <div class="article-card-content">
@@ -175,8 +209,6 @@
                     <p>Up or down, it's in your hands.</p>
                 </div>
             </a>
-
-                <!-- Article Card 5 -->
             <a href="the-search-for-homeostasis.html" class="article-card">
                 <img src="the-search-for-homeostasis.jpg" alt="The Search for Homeostasis">
                 <div class="article-card-content">
@@ -184,8 +216,6 @@
                     <p>As elusive as Bobby Fischer.</p>
                 </div>
             </a>
-            
-                <!-- Article Card 4 -->
             <a href="status-quo-and-setting-goals.html" class="article-card">
                 <img src="status-quo-and-setting-goals.jpg" alt="Status Quo and Setting Goals">
                 <div class="article-card-content">
@@ -193,7 +223,6 @@
                     <p>Measure What's Important</p>
                 </div>
             </a>
-
         </section>
     </main>
 
