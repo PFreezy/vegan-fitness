@@ -17,7 +17,7 @@
 
         nav {
             background: linear-gradient(to bottom, #2E8B57, black);
-            padding: 20px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -28,15 +28,17 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            gap: 40px;
+            flex-wrap: wrap; /* Allow wrapping for small screens */
+            gap: 10px;
         }
         nav a {
             text-decoration: none;
             color: white;
-            font-size: 20px;
+            font-size: 16px; /* Adjust font size for smaller screens */
             font-weight: bold;
             text-transform: uppercase;
             transition: color 0.3s;
+            padding: 5px 10px; /* Add padding for touch targets */
         }
         nav a:hover {
             color: #A5D6A7;
@@ -45,18 +47,33 @@
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
         main {
-            padding: 20px;
-            max-width: 800px;
+            padding: 15px;
+            max-width: 90%; /* Limit width for smaller screens */
             margin: auto;
         }
 
         h1 {
             color: #2E8B57;
+            font-size: 24px; /* Reduce size for smaller screens */
+        }
+
+        h2 {
+            color: #2E8B57;
+            font-size: 20px; /* Adjust for readability on mobile */
+        }
+
+        p, ul {
+            font-size: 16px; /* Improve readability on mobile */
+            line-height: 1.6; /* Add better spacing */
+        }
+
+        ul {
+            padding-left: 20px; /* Add some padding to lists */
         }
 
         footer {
@@ -64,7 +81,29 @@
             color: white;
             text-align: center;
             padding: 10px;
-            margin-top: 20px;
+            font-size: 14px; /* Smaller text for mobile */
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (min-width: 768px) {
+            nav ul {
+                gap: 20px; /* Increase spacing on larger screens */
+            }
+            nav a {
+                font-size: 18px; /* Larger font for tablets/desktops */
+            }
+            header {
+                padding: 20px;
+            }
+            main {
+                max-width: 800px; /* Wider content for larger screens */
+            }
+            h1 {
+                font-size: 32px;
+            }
+            h2 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -90,24 +129,25 @@
         <h2>The Search for Homeostasis</h2>
         <p>If you've read the last few articles, you now have a vast majority of the tools necessary to change your body. However, it is important to understand how to use these tools over time based on how your body responds to them for consistent progress.</p>
 
-<h2>Process for using these tools.</h2>
-<ul>
-    <li>Your body responds to stimuli. You create stimuli primarily through exercise. Lift weights, your body responds afterward by repairing muscle, and if properly fueld, building more of it as well.</li>
-    <li>The basic flow is like this: Stimuli --> Fuel + Building Blocks (Protein) --> Recovery.</li>
-    <li>This process takes a very, very long time before you start seeing tangible results, but there's no way you won't see them if you're consistent and adhering to The Holy Trinity: Exercise, Nutrition, and Recovery.</li>
-</ul>
+        <h2>Process for using these tools.</h2>
+        <ul>
+            <li>Your body responds to stimuli. You create stimuli primarily through exercise. Lift weights, your body responds afterward by repairing muscle, and if properly fueled, building more of it as well.</li>
+            <li>The basic flow is like this: Stimuli --> Fuel + Building Blocks (Protein) --> Recovery.</li>
+            <li>This process takes a very, very long time before you start seeing tangible results, but there's no way you won't see them if you're consistent and adhering to The Holy Trinity: Exercise, Nutrition, and Recovery.</li>
+        </ul>
 
         <h2>But how often should I be doing this?</h2>
         <p>More to be unpacked here in articles under "Calories Out" tab, but ultimately, you can see progress with just one day of resistance training per week. Ideally, you'll do it 3 days a week for optimal results. Cardio you can do a lot more of, such as 3-5 days a week.</p>
-<section>
-    <ul>
-        <li>Without a doubt, the most important skill to master here is adherence. You will never make progress if you do not practice discipline.</li>
-        <li>Paradoxically, be forgiving to yourself if you need to skip a day. Life happens, and results take so long to foster that it won't make a difference if you go today or tomorrow. But it will make a difference if you stop going for the next 3 months.</li>
-        <li>At the beginning of your fitness journey, focus on doing exercises that you love and enjoy. Personally, I love love love Deadlifts, and hate Squats. I deadlifted for a year before I finally decided to add squats to my regime. No regrets. Progress is accumulative.</li>
-    </ul>
-</section>
+        <section>
+            <ul>
+                <li>Without a doubt, the most important skill to master here is adherence. You will never make progress if you do not practice discipline.</li>
+                <li>Paradoxically, be forgiving to yourself if you need to skip a day. Life happens, and results take so long to foster that it won't make a difference if you go today or tomorrow. But it will make a difference if you stop going for the next 3 months.</li>
+                <li>At the beginning of your fitness journey, focus on doing exercises that you love and enjoy. Personally, I love love love Deadlifts, and hate Squats. I deadlifted for a year before I finally decided to add squats to my regime. No regrets. Progress is accumulative.</li>
+            </ul>
+        </section>
+
         <h2>Don't sleep on recovery.</h2>
-        <p>But definitely sleep. Your body needs time to recouperate from a particularly intense exercise session. If you need an extra day or two to recover, take them. But make sure you're getting at minimum 7 hours of sleep. 8 or more is ideal. Recovery takes effort, and if you do not make intentional choices to allow your body that time to recover, then you're probably just making excuses as to why you don't want to go to the gym again.</p>
+        <p>But definitely sleep. Your body needs time to recuperate from a particularly intense exercise session. If you need an extra day or two to recover, take them. But make sure you're getting at minimum 7 hours of sleep. 8 or more is ideal. Recovery takes effort, and if you do not make intentional choices to allow your body that time to recover, then you're probably just making excuses as to why you don't want to go to the gym again.</p>
     </main>
 
     <!-- Footer -->
