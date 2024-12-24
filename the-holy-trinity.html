@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Declaration of Intent</title>
+    <title>The Holy Trinity</title>
     <meta name="description" content="Learn the essentials of building a plant-based diet to fuel your gains and optimize performance.">
     <meta name="keywords" content="vegan, plant-based nutrition, muscle growth, fitness, vegan diet">
     <meta name="author" content="Vegan Hypertrophy">
@@ -17,7 +17,7 @@
 
         nav {
             background: linear-gradient(to bottom, #2E8B57, black);
-            padding: 20px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -28,15 +28,17 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            gap: 40px;
+            flex-wrap: wrap; /* Allow wrapping for small screens */
+            gap: 10px;
         }
         nav a {
             text-decoration: none;
             color: white;
-            font-size: 20px;
+            font-size: 16px; /* Adjust font size for smaller screens */
             font-weight: bold;
             text-transform: uppercase;
             transition: color 0.3s;
+            padding: 5px 10px; /* Add padding for touch targets */
         }
         nav a:hover {
             color: #A5D6A7;
@@ -45,18 +47,33 @@
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
         main {
-            padding: 20px;
-            max-width: 800px;
+            padding: 15px;
+            max-width: 90%; /* Limit width for smaller screens */
             margin: auto;
         }
 
         h1 {
             color: #2E8B57;
+            font-size: 24px; /* Reduce size for smaller screens */
+        }
+
+        h2 {
+            color: #2E8B57;
+            font-size: 20px; /* Adjust for readability on mobile */
+        }
+
+        p, ul {
+            font-size: 16px; /* Improve readability on mobile */
+            line-height: 1.6; /* Add better spacing */
+        }
+
+        ul {
+            padding-left: 20px; /* Add some padding to lists */
         }
 
         footer {
@@ -64,7 +81,29 @@
             color: white;
             text-align: center;
             padding: 10px;
-            margin-top: 20px;
+            font-size: 14px; /* Smaller text for mobile */
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (min-width: 768px) {
+            nav ul {
+                gap: 20px; /* Increase spacing on larger screens */
+            }
+            nav a {
+                font-size: 18px; /* Larger font for tablets/desktops */
+            }
+            header {
+                padding: 20px;
+            }
+            main {
+                max-width: 800px; /* Wider content for larger screens */
+            }
+            h1 {
+                font-size: 32px;
+            }
+            h2 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -91,16 +130,16 @@
         <p>The vast majority of improvements you will make to your health, wellness, and life will be through three primary vehicles: Exercise, Recovery, and Nutrition.</p>
         <ul>
             <li>You can double click into each of these, and you will find constituent elements that make up these categories.</li>
-            <li>Excercise comes in two primary forms: Resistance Training and Aerobic (Cardio)</li>
-            <li>Recovery is mostly about sleep (say, 85-90%), but there's other factors that can play into your recovery.</li>
-            <li>Nutrition is all about macronutrients, but the really the only one that matters is protein.</li>
+            <li>Exercise comes in two primary forms: Resistance Training and Aerobic (Cardio)</li>
+            <li>Recovery is mostly about sleep (say, 85-90%), but there are other factors that can play into your recovery.</li>
+            <li>Nutrition is all about macronutrients, but the only one that really matters is protein.</li>
         </ul>
 
         <h2>Is this really all I have to do?</h2>
         <p>Yes.</p>
 
         <h2>What's the catch?</h2>
-        <p>The catch is you have to do it. There's tools to help you. Information being one of the most important. But if you're not seeing results, it's either because you're not doing the work, or you haven't waited long enough. There's no other outcome. Once you have your Harajuku Moment, you'll learn that discipline is your new best friend, and motivation will be an afterthought.</p>
+        <p>The catch is you have to do it. There are tools to help you. Information being one of the most important. But if you're not seeing results, it's either because you're not doing the work, or you haven't waited long enough. There's no other outcome. Once you have your Harajuku Moment, you'll learn that discipline is your new best friend, and motivation will be an afterthought.</p>
     </main>
 
     <!-- Footer -->
