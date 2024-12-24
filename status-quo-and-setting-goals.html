@@ -114,22 +114,66 @@
             font-size: 18px;
             color: #2E8B57;
         }
+
+        .bmi-scale {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            height: 50px;
+            background: linear-gradient(to right, #A5D6A7, #FFEB3B, #FF7043, #F44336);
+            border-radius: 5px;
+        }
+        .bmi-scale .label {
+            position: absolute;
+            top: -20px;
+            font-size: 12px;
+        }
+        .bmi-pointer {
+            position: absolute;
+            top: -15px;
+            width: 10px;
+            height: 60px;
+            background-color: black;
+            border-radius: 2px;
+        }
     </style>
     <script>
         function calculateBMI() {
-            const height = parseFloat(document.getElementById('height').value) / 100; // Convert cm to meters
+            const heightFeet = parseFloat(document.getElementById('heightFeet').value);
+            const heightInches = parseFloat(document.getElementById('heightInches').value);
             const weight = parseFloat(document.getElementById('weight').value);
-            if (!height || !weight) {
+
+            if (!heightFeet || !heightInches || !weight) {
                 document.getElementById('result').innerText = 'Please enter valid height and weight.';
                 return;
             }
-            const bmi = (weight / (height * height)).toFixed(2);
+
+            const totalHeightInches = (heightFeet * 12) + heightInches;
+            const heightMeters = totalHeightInches * 0.0254; // Convert inches to meters
+            const bmi = (weight / (heightMeters * heightMeters)).toFixed(2);
+
             let category = '';
-            if (bmi < 18.5) category = 'Underweight';
-            else if (bmi < 25) category = 'Normal weight';
-            else if (bmi < 30) category = 'Overweight';
-            else category = 'Obesity';
+            let pointerPosition = 0;
+
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                pointerPosition = 10;
+            } else if (bmi < 25) {
+                category = 'Normal weight';
+                pointerPosition = 40;
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                pointerPosition = 70;
+            } else {
+                category = 'Obesity';
+                pointerPosition = 90;
+            }
+
             document.getElementById('result').innerText = `Your BMI is ${bmi} (${category}).`;
+            const pointer = document.getElementById('bmi-pointer');
+            pointer.style.left = `${pointerPosition}%`;
         }
     </script>
 </head>
@@ -163,11 +207,20 @@
         <!-- BMI Calculator -->
         <section class="calculator">
             <h2>BMI Calculator</h2>
-            <p>Enter your height (in cm) and weight (in kg) to calculate your BMI.</p>
-            <input type="number" id="height" placeholder="Height (cm)" required>
-            <input type="number" id="weight" placeholder="Weight (kg)" required>
+            <p>Enter your height (in feet and inches) and weight (in pounds) to calculate your BMI.</p>
+            <input type="number" id="heightFeet" placeholder="Height (feet)">
+            <input type="number" id="heightInches" placeholder="Height (inches)">
+            <input type="number" id="weight" placeholder="Weight (lbs)">
             <button onclick="calculateBMI()">Calculate BMI</button>
             <div id="result" class="result"></div>
+
+            <div class="bmi-scale">
+                <div class="label" style="left: 10%;">Underweight</div>
+                <div class="label" style="left: 40%;">Normal</div>
+                <div class="label" style="left: 70%;">Overweight</div>
+                <div class="label" style="left: 90%;">Obese</div>
+                <div id="bmi-pointer" class="bmi-pointer"></div>
+            </div>
         </section>
 
         <section>
