@@ -175,8 +175,21 @@ function calculateBMI() {
         pointerPosition = 90; // 90% on the scale
     }
 
-    // Display BMI result and category
-    document.getElementById('result').innerText = `Your BMI is ${bmi} (${category}).`;
+    // Calculate target weight range
+    const minNormalWeight = Math.ceil(18.5 * (totalHeightInches * totalHeightInches) / 703);
+    const maxNormalWeight = Math.floor(24.9 * (totalHeightInches * totalHeightInches) / 703);
+
+    let weightChange = '';
+    if (bmi < 18.5) {
+        weightChange = `You need to gain at least ${minNormalWeight - weight} lbs to reach the normal BMI range.`;
+    } else if (bmi >= 25) {
+        weightChange = `You need to lose at least ${weight - maxNormalWeight} lbs to reach the normal BMI range.`;
+    } else {
+        weightChange = `You are within the normal BMI range.`;
+    }
+
+    // Display BMI result, category, and target weight range
+    document.getElementById('result').innerText = `Your BMI is ${bmi} (${category}).\nYour target weight range is ${minNormalWeight}–${maxNormalWeight} lbs.\n${weightChange}`;
 
     // Move the pointer dynamically
     const pointer = document.getElementById('bmi-pointer');
