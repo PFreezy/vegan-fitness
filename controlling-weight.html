@@ -17,7 +17,7 @@
 
         nav {
             background: linear-gradient(to bottom, #2E8B57, black);
-            padding: 20px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -28,15 +28,17 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            gap: 40px;
+            flex-wrap: wrap; /* Allow wrapping for small screens */
+            gap: 10px;
         }
         nav a {
             text-decoration: none;
             color: white;
-            font-size: 20px;
+            font-size: 16px; /* Adjust font size for smaller screens */
             font-weight: bold;
             text-transform: uppercase;
             transition: color 0.3s;
+            padding: 5px 10px; /* Add padding for touch targets */
         }
         nav a:hover {
             color: #A5D6A7;
@@ -45,18 +47,33 @@
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
         main {
-            padding: 20px;
-            max-width: 800px;
+            padding: 15px;
+            max-width: 90%; /* Limit width for smaller screens */
             margin: auto;
         }
 
         h1 {
             color: #2E8B57;
+            font-size: 24px; /* Reduce size for smaller screens */
+        }
+
+        h2 {
+            color: #2E8B57;
+            font-size: 20px; /* Adjust for readability on mobile */
+        }
+
+        p, ul {
+            font-size: 16px; /* Improve readability on mobile */
+            line-height: 1.6; /* Add better spacing */
+        }
+
+        ul {
+            padding-left: 20px; /* Add some padding to lists */
         }
 
         footer {
@@ -64,7 +81,29 @@
             color: white;
             text-align: center;
             padding: 10px;
-            margin-top: 20px;
+            font-size: 14px; /* Smaller text for mobile */
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (min-width: 768px) {
+            nav ul {
+                gap: 20px; /* Increase spacing on larger screens */
+            }
+            nav a {
+                font-size: 18px; /* Larger font for tablets/desktops */
+            }
+            header {
+                padding: 20px;
+            }
+            main {
+                max-width: 800px; /* Wider content for larger screens */
+            }
+            h1 {
+                font-size: 32px;
+            }
+            h2 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -88,26 +127,27 @@
     <!-- Main Content -->
     <main>
         <h2>Controlling Weight</h2>
-        <p>The biggest driver for most people to take up health and fitness again is unhappiness with their weight, both underweight and overweight. Most folks in developed countries will struggle with obseity, but in the words of Ted Lasso "All people are different people."</p>
+        <p>The biggest driver for most people to take up health and fitness again is unhappiness with their weight, both underweight and overweight. Most folks in developed countries will struggle with obesity, but in the words of Ted Lasso "All people are different people."</p>
 
-<h2>How do I control my weight?</h2>
-<ul>
-    <li>It's really simple: Calories In & Calories Out.</li>
-    <li>Want to lose weight? Calories Out > Calories In. And flip that to do gain weight. Anyone who tells you otherwise is probably selling you something.</li>
-    <li>This equation is simply focused on weight gain or weight loss. It's a little more nuanced to specifically gain muscle and shred fat.</li>
-</ul>
+        <h2>How do I control my weight?</h2>
+        <ul>
+            <li>It's really simple: Calories In & Calories Out.</li>
+            <li>Want to lose weight? Calories Out > Calories In. And flip that to gain weight. Anyone who tells you otherwise is probably selling you something.</li>
+            <li>This equation is simply focused on weight gain or weight loss. It's a little more nuanced to specifically gain muscle and shred fat.</li>
+        </ul>
 
         <h2>What are the best practices here?</h2>
-        <p>Protein, protein, and more protein. Maximize your protein intake, and build the right habits and recipes that support your endeavors. Protein is the building blocks of muscle, and protein intake has been shown to activate and increase protein synthesis.</p>
-<section>
-    <ul>
-        <li>Protein is even more critical if you are in a calorie deficit (Calories Out > Calories In).</li>
-        <li>The rest of your macronutrient intake (carbs and fats) can be comprised however you like, thought to optimize it will probably depend on how you train.</li>
-        <li>Controlling your Calories In is hands-down the best area to focus on for controlling your weight. Calories Out is a much smaller portion of your life you have control over, given how much of your Calories Out is determined by your Basal Metabolic Rate (BMR).</li>
-    </ul>
-</section>
+        <p>Protein, protein, and more protein. Maximize your protein intake, and build the right habits and recipes that support your endeavors. Protein is the building block of muscle, and protein intake has been shown to activate and increase protein synthesis.</p>
+        <section>
+            <ul>
+                <li>Protein is even more critical if you are in a calorie deficit (Calories Out > Calories In).</li>
+                <li>The rest of your macronutrient intake (carbs and fats) can be comprised however you like, though to optimize it will probably depend on how you train.</li>
+                <li>Controlling your Calories In is hands-down the best area to focus on for controlling your weight. Calories Out is a much smaller portion of your life you have control over, given how much of your Calories Out is determined by your Basal Metabolic Rate (BMR).</li>
+            </ul>
+        </section>
+
         <h2>Is vegan especially good at helping me lose weight?</h2>
-        <p>Probably not. Any diet you follow, i.e. carnivore, vegan, keto, caveman, etc. It doesn't matter. You can over-eat and under-eat on all of them. Most people use diets like these in order to lose weight, and it's effective at first because you are eliminating an entire section of food you would normally eat (i.e. no meat, dairy, or eggs being vegan). Eventually the body seeks homestasis and you'll gain that weight back later if you're not intentionally restricting your calories.</p>
+        <p>Probably not. Any diet you follow, i.e. carnivore, vegan, keto, caveman, etc. doesn't matter. You can over-eat and under-eat on all of them. Most people use diets like these in order to lose weight, and it's effective at first because you are eliminating an entire section of food you would normally eat (i.e. no meat, dairy, or eggs being vegan). Eventually, the body seeks homeostasis and you'll gain that weight back later if you're not intentionally restricting your calories.</p>
     </main>
 
     <!-- Footer -->
