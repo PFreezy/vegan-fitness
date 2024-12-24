@@ -140,22 +140,22 @@
         }
     </style>
 <script>
-  function calculateBMI() {
+function calculateBMI() {
     const heightFeet = parseFloat(document.getElementById('heightFeet').value);
     const heightInches = parseFloat(document.getElementById('heightInches').value || 0); // Default to 0 if blank
     const weight = parseFloat(document.getElementById('weight').value);
 
-    if (isNaN(heightFeet) || isNaN(weight) || heightFeet <= 0 || weight <= 0) {
+    // Validate inputs
+    if (isNaN(heightFeet) || isNaN(heightInches) || isNaN(weight) || heightFeet <= 0 || weight <= 0 || heightInches < 0 || heightInches >= 12) {
         document.getElementById('result').innerText = 'Please enter valid height and weight.';
         return;
     }
 
-    // Convert height to total inches and then to meters
+    // Convert height to total inches
     const totalHeightInches = (heightFeet * 12) + heightInches;
-    const heightMeters = totalHeightInches * 0.0254;
 
-    // Calculate BMI
-    const bmi = (weight / (heightMeters * heightMeters)).toFixed(2);
+    // Calculate BMI using the correct formula
+    const bmi = ((weight / (totalHeightInches * totalHeightInches)) * 703).toFixed(2);
 
     // Determine BMI category and pointer position
     let category = '';
@@ -163,22 +163,22 @@
 
     if (bmi < 18.5) {
         category = 'Underweight';
-        pointerPosition = 10; // Adjust scale position
+        pointerPosition = 10; // Adjust pointer position
     } else if (bmi >= 18.5 && bmi < 25) {
         category = 'Normal weight';
-        pointerPosition = 40;
+        pointerPosition = 40; // 40% on the scale
     } else if (bmi >= 25 && bmi < 30) {
         category = 'Overweight';
-        pointerPosition = 70;
+        pointerPosition = 70; // 70% on the scale
     } else {
         category = 'Obesity';
-        pointerPosition = 90;
+        pointerPosition = 90; // 90% on the scale
     }
 
-    // Update BMI result
+    // Display BMI result and category
     document.getElementById('result').innerText = `Your BMI is ${bmi} (${category}).`;
 
-    // Update pointer position
+    // Move the pointer dynamically
     const pointer = document.getElementById('bmi-pointer');
     pointer.style.left = `${pointerPosition}%`;
 }
