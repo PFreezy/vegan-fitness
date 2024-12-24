@@ -80,7 +80,58 @@
             font-weight: bold;
             text-decoration: none;
         }
+
+        .calculator {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            text-align: center;
+        }
+        .calculator input {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(100% - 24px);
+            max-width: 300px;
+        }
+        .calculator button {
+            background-color: #2E8B57;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .calculator button:hover {
+            background-color: #A5D6A7;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #2E8B57;
+        }
     </style>
+    <script>
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value) / 100; // Convert cm to meters
+            const weight = parseFloat(document.getElementById('weight').value);
+            if (!height || !weight) {
+                document.getElementById('result').innerText = 'Please enter valid height and weight.';
+                return;
+            }
+            const bmi = (weight / (height * height)).toFixed(2);
+            let category = '';
+            if (bmi < 18.5) category = 'Underweight';
+            else if (bmi < 25) category = 'Normal weight';
+            else if (bmi < 30) category = 'Overweight';
+            else category = 'Obesity';
+            document.getElementById('result').innerText = `Your BMI is ${bmi} (${category}).`;
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -107,37 +158,31 @@
             <p>
                 Everyone has a different starting place. The first step is to identify the “You are Here” point on the map. So that begs the question, how do I do that? It starts by identifying the number you want to change that measures something about yourself. This allows you to check your progress over time and keep yourself accountable.
             </p>
-            <p>Let’s consider the below three possible metrics and when it’s best to use them:</p>
-            <ul>
-                <li><strong>Total Weight:</strong> This is a great number to start with because it’s very easy to measure, and highly precise when using the same scale. But it doesn’t tell you much outside of weight gain and weight loss.</li>
-                <li><strong>BMI:</strong> A score given based on how your weight relates to your height. 20-25 is considered “normal”. Fairly easy number to calculate.</li>
-                <li><strong>Body Fat %:</strong> Not possible to measure without a bioimpedance scale, calipers, or other specialized device. Best to use when you are within striking distance of your goals using the two metrics above.</li>
-            </ul>
-            <p>
-                My advice: Start with your BMI and shoot for somewhere between 20-25. Based on that score you’ll know what your weight needs to be, and that’s what you shoot for and measure from now on until you’ve graduated from novice to intermediate.
-            </p>
         </section>
+
+        <!-- BMI Calculator -->
+        <section class="calculator">
+            <h2>BMI Calculator</h2>
+            <p>Enter your height (in cm) and weight (in kg) to calculate your BMI.</p>
+            <input type="number" id="height" placeholder="Height (cm)" required>
+            <input type="number" id="weight" placeholder="Weight (kg)" required>
+            <button onclick="calculateBMI()">Calculate BMI</button>
+            <div id="result" class="result"></div>
+        </section>
+
         <section>
             <h2>How often should I measure?</h2>
             <p>
                 Ideally, once a day, and you’re using a fitness tracking app to see how these numbers progress over time, and they’ll give you helpful graphs and visuals to go along with it. You’ll find that even if you slip and have a day or two where you overeat a little and gain weight, if you’re adhering to your calorie deficit for 5 out of 7 days (example), you’ll still lose weight over the course of the whole week. Remember, this is your life now, so although you may have slip-ups, you have to remain consistent most of the time.
             </p>
         </section>
+
         <section>
             <h2>Where do I take it?</h2>
             <p>
                 Goal weight will vary for everyone due to differences in height. But you should be shooting for a BMI of 20-25, anywhere in there is fine. Can you be 26 and be healthy? Yes, but you could still probably stand to lose X amount and be healthier. What about 19? Of course, but you could still stand to gain a little and also will still be healthier. But if you’re far outside those bounds, it’s time to get to work.
             </p>
         </section>
-        <section>
-            <h2>Anything else?</h2>
-            <p>
-                For investing in your own success, I highly recommend investing in a bioimpedance scale, like Withings. It’s a couple hundred dollars, but it is often the single most pivotal piece of equipment that will help you change your life forever. Also comes with its own app to help with tracking and coaching. Invest.
-            </p>
-        </section>
-        <div class="cta">
-            <p>Looking for the right tools to start your journey? Check out our <a href="tools.html">recommended tools</a>!</p>
-        </div>
     </main>
 
     <!-- Footer -->
