@@ -2,74 +2,209 @@
 <html lang="en">
 <head>
     <meta name="description" content="Vegan Hypertrophy - Science-driven framework for maximizing fitness and nutrition potential.">
-<meta name="keywords" content="vegan, hypertrophy, fitness, plant-based, nutrition, calories">
-<meta name="author" content="Vegan Hypertrophy">
+    <meta name="keywords" content="vegan, hypertrophy, fitness, plant-based, nutrition, calories">
+    <meta name="author" content="Vegan Hypertrophy">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calories In</title>
+    <title>Calories In | Vegan Hypertrophy</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
         }
+
+        /* Navigation Bar */
+        nav {
+            background: linear-gradient(to bottom, #2E8B57, black); /* Green to Black Gradient */
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Wrap for smaller screens */
+            gap: 10px;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 5px 10px; /* Touch-friendly */
+        }
+        nav a:hover {
+            color: #A5D6A7; /* Lighter green for hover effect */
+        }
+
+        /* Header Styling */
         header {
             background-color: #2E8B57;
             color: white;
-            padding: 10px 20px;
+            padding: 20px;
             text-align: center;
         }
+
+        header p {
+            font-size: 16px; /* Smaller for mobile */
+        }
+
+        /* Main Section Styling */
+        main {
+            padding: 15px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2E8B57;
+            font-size: 24px; /* Adjust for mobile */
+        }
+
+        .articles-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjust column size for mobile */
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 90%; /* Shrink for mobile */
+        }
+
+        /* Article Card Styling */
+        .article-card {
+            display: block; /* Make the entire card clickable */
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit text color */
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .article-card:hover {
+            transform: scale(1.03); /* Slight zoom effect on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 120px; /* Adjust for mobile */
+            object-fit: cover;
+        }
+
+        .article-card-content {
+            padding: 10px;
+        }
+
+        .article-card h3 {
+            margin: 0;
+            font-size: 16px; /* Adjust for mobile */
+            color: #2E8B57;
+        }
+
+        .article-card p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 12px; /* Adjust for mobile */
+        }
+
         footer {
             background-color: #2E8B57;
             color: white;
             text-align: center;
             padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            font-size: 14px; /* Adjust for mobile */
+        }
+
+        /* Media Queries for Larger Screens */
+        @media (min-width: 768px) {
+            nav ul {
+                gap: 20px; /* Adjust spacing for larger screens */
+            }
+            nav a {
+                font-size: 18px;
+            }
+            header {
+                padding: 20px;
+            }
+            header p {
+                font-size: 18px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            .articles-section {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger cards */
+                gap: 20px;
+                max-width: 1200px; /* Wider content area */
+            }
+            .article-card img {
+                height: 200px; /* Taller images */
+            }
+            .article-card h3 {
+                font-size: 20px;
+            }
+            .article-card p {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-  <nav>
-    <ul style="
-        list-style: none; 
-        margin: 0; 
-        padding: 0; 
-        display: flex; 
-        justify-content: center; 
-        padding: 20px 0; 
-        background: linear-gradient(to bottom, #2E8B57, black); /* Green to Black Gradient */
-        color: white;
-    ">
-        <li style="margin: 0 15px;">
-            <a href="index.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Home</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="basic-principles.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Basic Principles</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="calories-in.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Calories In</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="calories-out.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Calories Out</a>
-        </li>
-        <li style="margin: 0 15px;">
-            <a href="hackz.html" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold; text-transform: uppercase;">Hackz</a>
-        </li>
-    </ul>
-</nav>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="basic-principles.html">Basic Principles</a></li>
+            <li><a href="calories-in.html">Calories In</a></li>
+            <li><a href="calories-out.html">Calories Out</a></li>
+            <li><a href="hackz.html">Hackz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
     <header>
         <h1>Calories In</h1>
+        <p>Explore how to track and optimize your caloric intake to achieve your fitness goals.</p>
     </header>
+
+    <!-- Main Content -->
     <main>
-        <p>Understanding your caloric intake is essential for achieving your fitness goals. Explore how to track and optimize the calories you consume while staying plant-based.</p>
-        <ul>
-            <li>How to calculate your caloric needs</li>
-            <li>Top high-calorie vegan foods</li>
-            <li>Meal prep tips for bulking and cutting</li>
-        </ul>
+        <h1>Articles</h1>
+        <section class="articles-section">
+            <!-- Article Cards -->
+            <a href="status-quo-and-setting-goals.html" class="article-card">
+                <img src="status-quo-and-setting-goals.jpg" alt="Status Quo and Setting Goals">
+                <div class="article-card-content">
+                    <h3>Status Quo and Setting Goals</h3>
+                    <p>Measure What’s Important</p>
+                </div>
+            </a>
+            <a href="framing.html" class="article-card">
+                <img src="framing.jpg" alt="Framing">
+                <div class="article-card-content">
+                    <h3>Framing</h3>
+                    <p>Improve your Relationship to Sensations</p>
+                </div>
+            </a>
+            <a href="intermittent-fasting-or-calorie-restriction.html" class="article-card">
+                <img src="intermittent-fasting.jpg" alt="Intermittent Fasting or Calorie Restriction">
+                <div class="article-card-content">
+                    <h3>Intermittent Fasting or Calorie Restriction</h3>
+                    <p>Commit to a Choice</p>
+                </div>
+            </a>
+        </section>
     </main>
+
+    <!-- Footer -->
     <footer>
         &copy; 2024 Vegan Hypertrophy. All rights reserved.
     </footer>
