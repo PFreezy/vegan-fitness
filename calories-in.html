@@ -45,15 +45,37 @@
         }
 
         /* Header Styling */
-        header {
-            background-color: #2E8B57;
-            color: white;
-            padding: 20px;
+        .hero {
+            background: url('calories-in-banner.jpg') no-repeat center center/cover; /* Replace with your image */
+            height: 40vh; /* Adjust height as needed */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            color: white;
+            position: relative;
         }
-
-        header p {
-            font-size: 16px; /* Smaller for mobile */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Add a dark overlay for better text readability */
+            z-index: 1;
+        }
+        .hero h1 {
+            font-size: 36px;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+        }
+        .hero p {
+            font-size: 18px;
+            margin-top: 10px;
+            z-index: 2;
+            position: relative;
         }
 
         /* Main Section Styling */
@@ -131,28 +153,14 @@
             nav a {
                 font-size: 18px;
             }
-            header {
-                padding: 20px;
+            .hero {
+                height: 50vh; /* Increase height for larger screens */
             }
-            header p {
-                font-size: 18px;
+            .hero h1 {
+                font-size: 48px; /* Larger font size for desktop */
             }
-            h1 {
-                font-size: 28px;
-            }
-            .articles-section {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger cards */
-                gap: 20px;
-                max-width: 1200px; /* Wider content area */
-            }
-            .article-card img {
-                height: 200px; /* Taller images */
-            }
-            .article-card h3 {
-                font-size: 20px;
-            }
-            .article-card p {
-                font-size: 14px;
+            .hero p {
+                font-size: 24px; /* Adjust font size for readability */
             }
         }
     </style>
@@ -169,11 +177,11 @@
         </ul>
     </nav>
 
-    <!-- Header -->
-    <header>
+    <!-- Hero Section -->
+    <div class="hero">
         <h1>Calories In</h1>
-        <p>Explore how to track and optimize your caloric intake to achieve your fitness goals.</p>
-    </header>
+        <p>Understand and optimize your caloric intake for sustainable growth.</p>
+    </div>
 
     <!-- Main Content -->
     <main>
