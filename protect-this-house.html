@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Tower Defense Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #333;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #eee;
+      border: 2px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    // Get canvas and context
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Define a simple path as an array of points.
+    // Enemies will follow this path from start to finish.
+    const path = [
+      { x: 0,   y: 300 },
+      { x: 200, y: 300 },
+      { x: 200, y: 500 },
+      { x: 600, y: 500 },
+      { x: 600, y: 100 },
+      { x: 800, y: 100 }
+    ];
+
+    // --- Enemy Class ---
+    class Enemy {
+      constructor() {
+        this.radius = 10;
+        this.health = 100;
+        this.speed = 1;
+        // Start at the first point in the path
+        this.x = path[0].x;
+        this.y = path[0].y;
+        this.currentPoint = 1;  // Next target in the path
+        this.alive = true;
+      }
+      
+      update() {
+        // If enemy has reached the end of the path, simply stop moving.
+        if (this.currentPoint >= path.length) return;
+        
+        const target = path[this.currentPoint];
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < this.speed) {
+          // Snap to the target and move to the next point.
+          this.x = target.x;
+          this.y = target.y;
+          this.currentPoint++;
+        } else {
+          // Move toward the target.
+          this.x += (dx / distance) * this.speed;
+          this.y += (dy / distance) * this.speed;
+        }
+      }
+      
+      draw() {
+        // Draw enemy body.
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw a simple health bar.
+        const barWidth = 20;
+        const healthRatio = this.health / 100;
+        ctx.fillStyle = 'green';
+        ctx.fillRect(this.x - barWidth / 2, this.y - this.radius - 10, barWidth * healthRatio, 5);
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(this.x - barWidth / 2, this.y - this.radius - 10, barWidth, 5);
+      }
+    }
+
+    // --- Tower Class ---
+    class Tower {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.range = 100;
+        this.fireRate = 60; // Frames between shots
+        this.cooldown = 0;
+      }
+      
+      update() {
+        if (this.cooldown > 0) {
+          this.cooldown--;
+        } else {
+          // Look for the first enemy within range.
+          let target = null;
+          for (let enemy of enemies) {
+            const dx = enemy.x - this.x;
+            const dy = enemy.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < this.range && enemy.alive) {
+              target = enemy;
+              break;
+            }
+          }
+          if (target) {
+            // Fire a projectile at the enemy.
+            projectiles.push(new Projectile(this.x, this.y, target));
+            this.cooldown = this.fireRate;
+          }
+        }
+      }
+      
+      draw() {
+        // Draw tower body.
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // (Optional) Draw the range circle.
+        ctx.strokeStyle = 'rgba(0, 0, 255, 0.3)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    // --- Projectile Class ---
+    class Projectile {
+      constructor(x, y, target) {
+        this.x = x;
+        this.y = y;
+        this.target = target;
+        this.speed = 4;
+        this.radius = 5;
+        this.damage = 20;
+        this.alive = true;
+      }
+      
+      update() {
+        // If the target is already dead, mark the projectile as done.
+        if (!this.target.alive) {
+          this.alive = false;
+          return;
+        }
+        
+        const dx = this.target.x - this.x;
+        const dy = this.target.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < this.speed) {
+          // Hit the target: reduce its health.
+          this.target.health -= this.damage;
+          if (this.target.health <= 0) {
+            this.target.alive = false;
+          }
+          this.alive = false;
+        } else {
+          // Move toward the target.
+          this.x += (dx / distance) * this.speed;
+          this.y += (dy / distance) * this.speed;
+        }
+      }
+      
+      draw() {
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Arrays to hold game objects.
+    let enemies = [];
+    let towers = [];
+    let projectiles = [];
+    
+    // Timer for enemy spawns.
+    let spawnTimer = 0;
+    const spawnInterval = 120; // Spawn a new enemy every 120 frames.
+
+    // --- Game Loop Functions ---
+    function update() {
+      // Spawn new enemy if timer is done.
+      spawnTimer--;
+      if (spawnTimer <= 0) {
+        enemies.push(new Enemy());
+        spawnTimer = spawnInterval;
+      }
+      
+      // Update enemies.
+      enemies.forEach(enemy => {
+        if (enemy.alive) enemy.update();
+      });
+      
+      // Update towers.
+      towers.forEach(tower => tower.update());
+      
+      // Update projectiles.
+      projectiles.forEach(projectile => {
+        if (projectile.alive) projectile.update();
+      });
+      
+      // Remove dead enemies and projectiles.
+      enemies = enemies.filter(e => e.alive || e.currentPoint < path.length);
+      projectiles = projectiles.filter(p => p.alive);
+    }
+
+    function draw() {
+      // Clear the canvas.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw the path.
+      ctx.strokeStyle = 'gray';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(path[i].x, path[i].y);
+      }
+      ctx.stroke();
+      
+      // Draw towers.
+      towers.forEach(tower => tower.draw());
+      
+      // Draw enemies.
+      enemies.forEach(enemy => enemy.draw());
+      
+      // Draw projectiles.
+      projectiles.forEach(projectile => projectile.draw());
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // --- User Interaction ---
+    // Place a tower where the user clicks.
+    canvas.addEventListener('click', function(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      towers.push(new Tower(x, y));
+    });
+
+    // Start the game loop.
+    gameLoop();
+  </script>
+</body>
+</html>
