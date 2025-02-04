@@ -14,7 +14,7 @@
     canvas {
       display: block;
       margin: 20px auto;
-      background: #ddd;
+      background: #eee;
       border: 3px solid #444;
     }
     #ui {
@@ -39,6 +39,9 @@
   </div>
 
   <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
     // Game settings
     const gameTimeLimit = 30; // Game starts at 30 seconds
     let gameTime = gameTimeLimit;
@@ -65,10 +68,23 @@
         document.getElementById("timeCounter").textContent = gameTime;
       } else {
         alert("Game Over! Time's up!");
+        clearInterval(updateTime);
       }
     }
 
     setInterval(updateTime, 1000);
+
+    // Draw enemy path
+    function drawPath() {
+      ctx.strokeStyle = 'gray';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(path[i].x, path[i].y);
+      }
+      ctx.stroke();
+    }
 
     // Tower class
     class Tower {
@@ -213,18 +229,6 @@
     function updateUI() {
       document.getElementById("enemyCounter").textContent = enemiesRemaining;
       document.getElementById("scoreCounter").textContent = score;
-    }
-
-    // Draw enemy path
-    function drawPath() {
-      ctx.strokeStyle = 'gray';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(path[0].x, path[0].y);
-      for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x, path[i].y);
-      }
-      ctx.stroke();
     }
 
     // Game loop
