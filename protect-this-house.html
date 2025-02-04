@@ -50,7 +50,7 @@
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="ui">
     <div class="score">Score: <span id="scoreCounter">0</span></div>
-    <div class="time">Time Remaining: <span id="timeCounter">30</span>s</div>
+    <div class="time">Time Remaining: <span id="timeCounter">60</span>s</div>
     <div class="level-bar">
       <span id="levelProgress"></span>
     </div>
@@ -63,7 +63,7 @@
     // Game State Variables
     let score = 0;
     let enemiesRemaining = 10;
-    let gameTime = 30;
+    let gameTime = 60; // Start the countdown at 60 seconds
     let levelProgress = 0;
 
     // Enemy path points
@@ -255,7 +255,7 @@
         if (enemiesRemaining > 0) {
           enemies.push(new Enemy());
         }
-      }, 3000);
+      }, 3000); // spawn new enemy every 3 seconds
 
       gameLoop();
     }
