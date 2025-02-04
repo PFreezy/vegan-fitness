@@ -180,6 +180,11 @@
           enemiesRemaining--;
           currency += 20; // Earn money when enemies are destroyed
           this.alive = false;
+
+          // Randomly drop a power-up
+          if (Math.random() < 0.3) {
+            powerUps.push(new PowerUp(this.target.x, this.target.y));
+          }
         } else {
           this.x += (dx / dist) * this.speed;
           this.y += (dy / dist) * this.speed;
@@ -238,11 +243,11 @@
         this.x = x;
         this.y = y;
         this.radius = 10;
-        this.type = Math.random() < 0.5 ? 'money' : 'damageBoost';
+        this.type = Math.random() < 0.5 ? 'money' : 'damageBoost'; // Money or damage boost
       }
 
       update() {
-        // Power-up logic: check if it was collected by the player (towers can collect them)
+        // Logic for collecting power-ups could be added here
       }
 
       draw() {
