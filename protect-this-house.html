@@ -8,50 +8,65 @@
     body {
       margin: 0;
       padding: 0;
-      background: #333;
-      font-family: Arial, sans-serif;
+      background: #111;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
     }
     canvas {
       display: block;
       margin: 20px auto;
-      background: #eee;
-      border: 3px solid #444;
+      background: #222;
+      border: none;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
     }
     #ui {
       position: absolute;
-      top: 10px;
+      top: 20px;
       left: 20px;
-      color: white;
+      color: #FFFFFF;
       font-size: 18px;
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
     }
-    #ui div {
-      margin: 5px 0;
+    .score, .time {
+      margin: 10px 0;
+    }
+    .level-bar {
+      width: 200px;
+      height: 20px;
+      background: #444;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .level-bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(45deg, #00ff99, #00ccff);
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="ui">
-    <div>Time Remaining: <span id="timeCounter">30</span>s</div>
-    <div>Enemies Remaining: <span id="enemyCounter">10</span></div>
-    <div>Score: <span id="scoreCounter">0</span></div>
+    <div class="score">Score: <span id="scoreCounter">0</span></div>
+    <div class="time">Time Remaining: <span id="timeCounter">30</span>s</div>
+    <div class="level-bar">
+      <span id="levelProgress"></span>
+    </div>
   </div>
 
   <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-    // Game settings
-    const gameTimeLimit = 30; // Game starts at 30 seconds
-    let gameTime = gameTimeLimit;
+    // Game State Variables
     let score = 0;
     let enemiesRemaining = 10;
-    const enemies = [];
-    const towers = [];
-    const projectiles = [];
+    let gameTime = 30;
+    let levelProgress = 0;
 
-    // Enemy path (points)
+    // Enemy path points
     const path = [
       { x: 0, y: 300 },
       { x: 200, y: 300 },
@@ -61,23 +76,22 @@
       { x: 800, y: 100 }
     ];
 
-    // Countdown timer
+    // Game Timer & UI Update
     function updateTime() {
       if (gameTime > 0) {
         gameTime--;
-        document.getElementById("timeCounter").textContent = gameTime;
+        document.getElementById('timeCounter').textContent = gameTime;
       } else {
         alert("Game Over! Time's up!");
         clearInterval(updateTime);
       }
     }
-
     setInterval(updateTime, 1000);
 
-    // Draw enemy path
+    // Draw enemy path with gradient effect
     function drawPath() {
-      ctx.strokeStyle = 'gray';
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
+      ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.moveTo(path[0].x, path[0].y);
       for (let i = 1; i < path.length; i++) {
@@ -86,7 +100,7 @@
       ctx.stroke();
     }
 
-    // Tower class
+    // Basic Tower Class
     class Tower {
       constructor(x, y) {
         this.x = x;
@@ -95,99 +109,71 @@
         this.level = 1;
         this.fireRate = 60;
         this.cooldown = 0;
-        this.cost = 50;
-        this.upgraded = false;
-        this.type = "handgun";
+        this.type = 'handgun';
       }
-
       upgrade() {
-        if (!this.upgraded && score >= this.cost) {
+        if (score >= 50) {
           this.level++;
-          this.type = this.level === 2 ? "machine gun" : "bazooka";
           this.range += 20;
-          this.fireRate = this.level === 2 ? 45 : 30;
-          this.cost *= 2;
-          score -= this.cost;
-          this.upgraded = true;
+          this.fireRate = 45;
+          score -= 50;
         }
       }
-
       update() {
         if (this.cooldown > 0) {
           this.cooldown--;
         } else {
-          let target = null;
-          for (let enemy of enemies) {
-            const dx = enemy.x - this.x;
-            const dy = enemy.y - this.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < this.range && enemy.alive) {
-              target = enemy;
-              break;
-            }
-          }
+          let target = enemies.find(e => {
+            const dx = e.x - this.x;
+            const dy = e.y - this.y;
+            return Math.sqrt(dx * dx + dy * dy) < this.range && e.alive;
+          });
           if (target) {
-            projectiles.push(new Projectile(this.x, this.y, target, this.type));
+            projectiles.push(new Projectile(this.x, this.y, target));
             this.cooldown = this.fireRate;
           }
         }
       }
-
       draw() {
-        ctx.fillStyle = this.type === "handgun" ? "blue" : (this.type === "machine gun" ? "green" : "red");
+        ctx.fillStyle = '#00FF99'; // Neon green for tower
         ctx.beginPath();
         ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "black";
-        ctx.stroke();
       }
     }
 
-    // Projectile class
+    // Projectile Class (with particle effects)
     class Projectile {
-      constructor(x, y, target, type) {
+      constructor(x, y, target) {
         this.x = x;
         this.y = y;
         this.target = target;
-        this.speed = type === "bazooka" ? 3 : (type === "machine gun" ? 5 : 4);
-        this.radius = 5;
-        this.damage = type === "bazooka" ? 40 : (type === "machine gun" ? 15 : 10);
+        this.speed = 4;
         this.alive = true;
       }
-
       update() {
-        if (!this.target.alive) {
-          this.alive = false;
-          return;
-        }
-
         const dx = this.target.x - this.x;
         const dy = this.target.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < this.speed) {
-          this.target.health -= this.damage;
-          if (this.target.health <= 0) {
-            this.target.alive = false;
-            score += 10;
-            enemiesRemaining--;
-          }
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < this.speed) {
+          this.target.alive = false;
+          score += 10;
+          enemiesRemaining--;
           this.alive = false;
         } else {
-          this.x += (dx / distance) * this.speed;
-          this.y += (dy / distance) * this.speed;
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
         }
       }
-
       draw() {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = '#FF5722'; // Bright red projectiles
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Enemy class
+    // Enemy Class (with smooth movement)
     class Enemy {
       constructor() {
         this.radius = 10;
@@ -198,61 +184,60 @@
         this.currentPoint = 1;
         this.alive = true;
       }
-
       update() {
         if (this.currentPoint >= path.length) return;
 
         const target = path[this.currentPoint];
         const dx = target.x - this.x;
         const dy = target.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < this.speed) {
+        if (dist < this.speed) {
           this.x = target.x;
           this.y = target.y;
           this.currentPoint++;
         } else {
-          this.x += (dx / distance) * this.speed;
-          this.y += (dy / distance) * this.speed;
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
         }
       }
-
       draw() {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = '#FF6347'; // Tomato color for enemies
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Update the UI
+    // Update and draw the UI
     function updateUI() {
-      document.getElementById("enemyCounter").textContent = enemiesRemaining;
-      document.getElementById("scoreCounter").textContent = score;
+      document.getElementById('scoreCounter').textContent = score;
+      document.getElementById('enemyCounter').textContent = enemiesRemaining;
+      const progress = Math.max(0, (score / 100) * 100);
+      document.getElementById('levelProgress').style.width = `${progress}%`;
     }
 
-    // Game loop
+    // Game Loop Function
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the enemy path
-      drawPath();
+      drawPath();  // Draw path
 
       // Update game objects
-      enemies.forEach(enemy => enemy.update());
-      towers.forEach(tower => tower.update());
-      projectiles.forEach(projectile => projectile.update());
+      enemies.forEach(e => e.update());
+      towers.forEach(t => t.update());
+      projectiles.forEach(p => p.update());
 
       // Remove dead enemies and projectiles
       enemies.filter(e => e.alive);
       projectiles.filter(p => p.alive);
 
       // Draw game objects
-      enemies.forEach(enemy => enemy.draw());
-      towers.forEach(tower => tower.draw());
-      projectiles.forEach(projectile => projectile.draw());
+      enemies.forEach(e => e.draw());
+      towers.forEach(t => t.draw());
+      projectiles.forEach(p => p.draw());
 
-      updateUI();
+      updateUI();  // Update score/time
       requestAnimationFrame(gameLoop);
     }
 
@@ -267,26 +252,12 @@
       gameLoop();
     }
 
-    // User interaction
-    canvas.addEventListener("click", function(event) {
+    // User interaction (place towers)
+    canvas.addEventListener('click', function(event) {
       const x = event.clientX - canvas.offsetLeft;
       const y = event.clientY - canvas.offsetTop;
 
-      let towerFound = false;
-      for (let tower of towers) {
-        const dx = tower.x - x;
-        const dy = tower.y - y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 20) {
-          towerFound = true;
-          tower.upgrade();
-          break;
-        }
-      }
-
-      if (!towerFound) {
-        towers.push(new Tower(x, y));
-      }
+      towers.push(new Tower(x, y));
     });
 
     startGame();
