@@ -23,30 +23,32 @@
       left: 20px;
       color: white;
       font-size: 18px;
+      font-family: Arial, sans-serif;
+    }
+    #ui div {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="ui">
-    <div>Time: <span id="timeCounter">0</span>s</div>
+    <div>Time Remaining: <span id="timeCounter">30</span>s</div>
     <div>Enemies Remaining: <span id="enemyCounter">10</span></div>
     <div>Score: <span id="scoreCounter">0</span></div>
   </div>
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
 
-    // --- Game Settings ---
-    const gameTimeLimit = 120; // In seconds
-    let gameTime = 0;
+  <script>
+    // Game settings
+    const gameTimeLimit = 30; // Game starts at 30 seconds
+    let gameTime = gameTimeLimit;
     let score = 0;
     let enemiesRemaining = 10;
     const enemies = [];
     const towers = [];
     const projectiles = [];
 
-    // --- Path for Enemies ---
+    // Enemy path (points)
     const path = [
       { x: 0, y: 300 },
       { x: 200, y: 300 },
@@ -56,10 +58,10 @@
       { x: 800, y: 100 }
     ];
 
-    // --- Game Timer ---
+    // Countdown timer
     function updateTime() {
-      if (gameTime < gameTimeLimit) {
-        gameTime++;
+      if (gameTime > 0) {
+        gameTime--;
         document.getElementById("timeCounter").textContent = gameTime;
       } else {
         alert("Game Over! Time's up!");
@@ -68,7 +70,7 @@
 
     setInterval(updateTime, 1000);
 
-    // --- Tower Class (with upgrades) ---
+    // Tower class
     class Tower {
       constructor(x, y) {
         this.x = x;
@@ -88,7 +90,7 @@
           this.type = this.level === 2 ? "machine gun" : "bazooka";
           this.range += 20;
           this.fireRate = this.level === 2 ? 45 : 30;
-          this.cost *= 2; // Double the cost for the next upgrade
+          this.cost *= 2;
           score -= this.cost;
           this.upgraded = true;
         }
@@ -125,7 +127,7 @@
       }
     }
 
-    // --- Projectile Class ---
+    // Projectile class
     class Projectile {
       constructor(x, y, target, type) {
         this.x = x;
@@ -151,7 +153,7 @@
           this.target.health -= this.damage;
           if (this.target.health <= 0) {
             this.target.alive = false;
-            score += 10; // Increase score for enemy kill
+            score += 10;
             enemiesRemaining--;
           }
           this.alive = false;
@@ -169,7 +171,7 @@
       }
     }
 
-    // --- Enemy Class ---
+    // Enemy class
     class Enemy {
       constructor() {
         this.radius = 10;
@@ -207,13 +209,13 @@
       }
     }
 
-    // --- UI Updates ---
+    // Update the UI
     function updateUI() {
       document.getElementById("enemyCounter").textContent = enemiesRemaining;
       document.getElementById("scoreCounter").textContent = score;
     }
 
-    // --- Game Loop ---
+    // Game loop
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -235,9 +237,8 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // --- Game Start ---
+    // Start the game
     function startGame() {
-      // Spawn enemies periodically
       setInterval(() => {
         if (enemiesRemaining > 0) {
           enemies.push(new Enemy());
@@ -247,12 +248,11 @@
       gameLoop();
     }
 
-    // --- User Interaction ---
+    // User interaction
     canvas.addEventListener("click", function(event) {
       const x = event.clientX - canvas.offsetLeft;
       const y = event.clientY - canvas.offsetTop;
 
-      // Place towers and upgrade if needed
       let towerFound = false;
       for (let tower of towers) {
         const dx = tower.x - x;
@@ -260,13 +260,13 @@
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < 20) {
           towerFound = true;
-          tower.upgrade(); // Upgrade if clicked on an existing tower
+          tower.upgrade();
           break;
         }
       }
 
       if (!towerFound) {
-        towers.push(new Tower(x, y)); // Place new tower
+        towers.push(new Tower(x, y));
       }
     });
 
