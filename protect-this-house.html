@@ -28,7 +28,7 @@
       font-family: 'Roboto', sans-serif;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
     }
-    .score, .time {
+    .score, .time, .level-bar, .currency {
       margin: 10px 0;
     }
     .level-bar {
@@ -50,11 +50,12 @@
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="ui">
     <div class="score">Score: <span id="scoreCounter">0</span></div>
+    <div class="currency">Currency: $<span id="currencyCounter">100</span></div>
     <div class="time">Time Remaining: <span id="timeCounter">60</span>s</div>
     <div class="level-bar">
       <span id="levelProgress"></span>
     </div>
-    <div id="enemyCounter"></div> <!-- Added counter for enemies remaining -->
+    <div id="enemyCounter"></div>
   </div>
 
   <script>
@@ -63,14 +64,18 @@
 
     // Game State Variables
     let score = 0;
+    let currency = 100;
     let enemiesRemaining = 10;
     let gameTime = 60; // Start the countdown at 60 seconds
     let levelProgress = 0;
+    let wave = 1;
+    let timerInterval;
 
     // Initialize the enemies and towers arrays
     let enemies = [];
     let towers = [];
     let projectiles = [];
+    let powerUps = [];
 
     // Enemy path points
     const path = [
@@ -83,18 +88,17 @@
     ];
 
     // Countdown timer
-    let timerInterval;
     function updateTime() {
       if (gameTime > 0) {
         gameTime--;
         document.getElementById('timeCounter').textContent = gameTime;
       } else {
         alert("Game Over! Time's up!");
-        clearInterval(timerInterval);  // Correct way to stop the interval
+        clearInterval(timerInterval);
       }
     }
 
-    // Correct way to set interval
+    // Start the countdown timer
     timerInterval = setInterval(updateTime, 1000);
 
     // Draw enemy path
@@ -111,25 +115,27 @@
 
     // Basic Tower Class
     class Tower {
-      constructor(x, y) {
+      constructor(x, y, type) {
         this.x = x;
         this.y = y;
-        this.range = 100;
+        this.range = type === 'machineGun' ? 150 : 100;
         this.level = 1;
-        this.fireRate = 60;
+        this.fireRate = type === 'machineGun' ? 30 : 60;
         this.cooldown = 0;
-        this.cost = 50;
+        this.cost = type === 'machineGun' ? 100 : 50;
+        this.type = type;
         this.upgraded = false;
-        this.type = 'handgun';
       }
+
       upgrade() {
         if (score >= 50) {
           this.level++;
           this.range += 20;
-          this.fireRate = 45;
+          this.fireRate = this.type === 'machineGun' ? 20 : 45;
           score -= 50;
         }
       }
+
       update() {
         if (this.cooldown > 0) {
           this.cooldown--;
@@ -145,15 +151,16 @@
           }
         }
       }
+
       draw() {
-        ctx.fillStyle = '#00FF99'; // Neon green for tower
+        ctx.fillStyle = this.type === 'machineGun' ? '#FF5722' : '#00FF99'; // Different color for different towers
         ctx.beginPath();
         ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Projectile Class (with particle effects)
+    // Projectile Class
     class Projectile {
       constructor(x, y, target) {
         this.x = x;
@@ -186,12 +193,12 @@
       }
     }
 
-    // Enemy Class (with smooth movement)
+    // Enemy Class
     class Enemy {
       constructor() {
         this.radius = 10;
         this.health = 100;
-        this.speed = 1;
+        this.speed = wave * 0.5;
         this.x = path[0].x;
         this.y = path[0].y;
         this.currentPoint = 1;
@@ -224,39 +231,61 @@
       }
     }
 
-    // Update the UI
-    function updateUI() {
-      document.getElementById('scoreCounter').textContent = score;
-      document.getElementById('timeCounter').textContent = gameTime;
-      // Update the enemy counter
-      document.getElementById('enemyCounter').textContent = `Enemies Remaining: ${enemiesRemaining}`;
-      const progress = Math.max(0, (score / 100) * 100);
-      document.getElementById('levelProgress').style.width = `${progress}%`;
+    // Power-Up Class
+    class PowerUp {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 10;
+        this.type = Math.random() < 0.5 ? 'money' : 'damageBoost';
+      }
+
+      update() {
+        // Power-up logic: check if it was collected by the player (towers can collect them)
+      }
+
+      draw() {
+        ctx.fillStyle = this.type === 'money' ? '#FFD700' : '#00FF00'; // Gold for money, green for boost
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    // Game loop
+    // Game Loop
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw the enemy path
-      drawPath();  // Draw path
+      drawPath();
 
       // Update game objects
       enemies.forEach(e => e.update());
       towers.forEach(t => t.update());
       projectiles.forEach(p => p.update());
+      powerUps.forEach(p => p.update());
 
       // Remove dead enemies and projectiles
-      enemies = enemies.filter(e => e.alive); // Correctly remove dead enemies
-      projectiles = projectiles.filter(p => p.alive); // Correctly remove dead projectiles
+      enemies = enemies.filter(e => e.alive);
+      projectiles = projectiles.filter(p => p.alive);
 
       // Draw game objects
       enemies.forEach(e => e.draw());
       towers.forEach(t => t.draw());
       projectiles.forEach(p => p.draw());
+      powerUps.forEach(p => p.draw());
 
-      updateUI();  // Update score/time
+      updateUI();
       requestAnimationFrame(gameLoop);
+    }
+
+    // Update the UI
+    function updateUI() {
+      document.getElementById('scoreCounter').textContent = score;
+      document.getElementById('currencyCounter').textContent = currency;
+      document.getElementById('enemyCounter').textContent = `Enemies Remaining: ${enemiesRemaining}`;
+      const progress = Math.max(0, (score / 100) * 100);
+      document.getElementById('levelProgress').style.width = `${progress}%`;
     }
 
     // Start the game
@@ -287,8 +316,9 @@
         }
       }
 
-      if (!towerFound) {
-        towers.push(new Tower(x, y)); // Create new tower at click position
+      if (!towerFound && currency >= 50) {
+        towers.push(new Tower(x, y, 'machineGun')); // Create a machine gun tower
+        currency -= 50; // Deduct cost for new tower
       }
     });
 
