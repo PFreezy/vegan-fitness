@@ -251,6 +251,7 @@
 
     // Start the game
     function startGame() {
+      // Start spawning enemies
       setInterval(() => {
         if (enemiesRemaining > 0) {
           enemies.push(new Enemy());
