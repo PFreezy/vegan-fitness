@@ -215,9 +215,24 @@
       document.getElementById("scoreCounter").textContent = score;
     }
 
+    // Draw enemy path
+    function drawPath() {
+      ctx.strokeStyle = 'gray';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(path[i].x, path[i].y);
+      }
+      ctx.stroke();
+    }
+
     // Game loop
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the enemy path
+      drawPath();
 
       // Update game objects
       enemies.forEach(enemy => enemy.update());
