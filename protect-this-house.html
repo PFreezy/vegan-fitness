@@ -76,7 +76,7 @@
       { x: 800, y: 100 }
     ];
 
-    // Game Timer & UI Update
+    // Countdown timer
     function updateTime() {
       if (gameTime > 0) {
         gameTime--;
@@ -86,9 +86,10 @@
         clearInterval(updateTime);
       }
     }
+
     setInterval(updateTime, 1000);
 
-    // Draw enemy path with gradient effect
+    // Draw enemy path
     function drawPath() {
       ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
       ctx.lineWidth = 4;
@@ -109,6 +110,8 @@
         this.level = 1;
         this.fireRate = 60;
         this.cooldown = 0;
+        this.cost = 50;
+        this.upgraded = false;
         this.type = 'handgun';
       }
       upgrade() {
@@ -151,6 +154,7 @@
         this.speed = 4;
         this.alive = true;
       }
+
       update() {
         const dx = this.target.x - this.x;
         const dy = this.target.y - this.y;
@@ -165,6 +169,7 @@
           this.y += (dy / dist) * this.speed;
         }
       }
+
       draw() {
         ctx.fillStyle = '#FF5722'; // Bright red projectiles
         ctx.beginPath();
@@ -184,6 +189,7 @@
         this.currentPoint = 1;
         this.alive = true;
       }
+
       update() {
         if (this.currentPoint >= path.length) return;
 
@@ -201,6 +207,7 @@
           this.y += (dy / dist) * this.speed;
         }
       }
+
       draw() {
         ctx.fillStyle = '#FF6347'; // Tomato color for enemies
         ctx.beginPath();
@@ -209,7 +216,7 @@
       }
     }
 
-    // Update and draw the UI
+    // Update the UI
     function updateUI() {
       document.getElementById('scoreCounter').textContent = score;
       document.getElementById('enemyCounter').textContent = enemiesRemaining;
@@ -217,10 +224,11 @@
       document.getElementById('levelProgress').style.width = `${progress}%`;
     }
 
-    // Game Loop Function
+    // Game loop
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Draw the enemy path
       drawPath();  // Draw path
 
       // Update game objects
@@ -257,7 +265,21 @@
       const x = event.clientX - canvas.offsetLeft;
       const y = event.clientY - canvas.offsetTop;
 
-      towers.push(new Tower(x, y));
+      let towerFound = false;
+      for (let tower of towers) {
+        const dx = tower.x - x;
+        const dy = tower.y - y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 20) {
+          towerFound = true;
+          tower.upgrade();
+          break;
+        }
+      }
+
+      if (!towerFound) {
+        towers.push(new Tower(x, y));
+      }
     });
 
     startGame();
