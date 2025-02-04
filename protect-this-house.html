@@ -67,11 +67,11 @@
     let currency = 100;
     let enemiesRemaining = 10;
     let gameTime = 60; // Start the countdown at 60 seconds
-    let levelProgress = 0;
     let wave = 1;
+    let spawnInterval = 3000; // Interval between enemy spawns
     let timerInterval;
 
-    // Initialize the enemies and towers arrays
+    // Initialize the enemies, towers, and power-ups arrays
     let enemies = [];
     let towers = [];
     let projectiles = [];
@@ -128,11 +128,11 @@
       }
 
       upgrade() {
-        if (score >= 50) {
+        if (currency >= 50) {
           this.level++;
           this.range += 20;
           this.fireRate = this.type === 'machineGun' ? 20 : 45;
-          score -= 50;
+          currency -= 50;
         }
       }
 
@@ -178,6 +178,7 @@
           this.target.alive = false;
           score += 10;
           enemiesRemaining--;
+          currency += 20; // Earn money when enemies are destroyed
           this.alive = false;
         } else {
           this.x += (dx / dist) * this.speed;
@@ -197,8 +198,8 @@
     class Enemy {
       constructor() {
         this.radius = 10;
-        this.health = 100;
-        this.speed = wave * 0.5;
+        this.health = 100 * wave; // Increase enemy health with each wave
+        this.speed = 1 + (wave * 0.2); // Increase enemy speed with each wave
         this.x = path[0].x;
         this.y = path[0].y;
         this.currentPoint = 1;
@@ -294,7 +295,7 @@
         if (enemiesRemaining > 0) {
           enemies.push(new Enemy());
         }
-      }, 3000); // spawn new enemy every 3 seconds
+      }, spawnInterval); // Spawn new enemy every few seconds, decreasing as waves progress
 
       gameLoop();
     }
