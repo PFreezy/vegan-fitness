@@ -113,25 +113,24 @@
       ctx.stroke();
     }
 
-    // Basic Tower Class
+    // Basic Tower Class with new types and upgrades
     class Tower {
       constructor(x, y, type) {
         this.x = x;
         this.y = y;
-        this.range = type === 'machineGun' ? 150 : 100;
-        this.level = 1;
-        this.fireRate = type === 'machineGun' ? 30 : 60;
-        this.cooldown = 0;
-        this.cost = type === 'machineGun' ? 100 : 50;
         this.type = type;
-        this.upgraded = false;
+        this.range = type === 'machineGun' ? 150 : (type === 'sniper' ? 300 : 100);
+        this.level = 1;
+        this.fireRate = type === 'machineGun' ? 30 : (type === 'sniper' ? 60 : 45);
+        this.cooldown = 0;
+        this.cost = type === 'machineGun' ? 100 : (type === 'sniper' ? 150 : 50);
       }
 
       upgrade() {
         if (currency >= 50) {
           this.level++;
           this.range += 20;
-          this.fireRate = this.type === 'machineGun' ? 20 : 45;
+          this.fireRate = this.type === 'machineGun' ? 20 : (this.type === 'sniper' ? 40 : 30);
           currency -= 50;
         }
       }
@@ -146,27 +145,27 @@
             return Math.sqrt(dx * dx + dy * dy) < this.range && e.alive;
           });
           if (target) {
-            projectiles.push(new Projectile(this.x, this.y, target));
+            projectiles.push(new Projectile(this.x, this.y, target, this.type));
             this.cooldown = this.fireRate;
           }
         }
       }
 
       draw() {
-        ctx.fillStyle = this.type === 'machineGun' ? '#FF5722' : '#00FF99'; // Different color for different towers
+        ctx.fillStyle = this.type === 'machineGun' ? '#FF5722' : (this.type === 'sniper' ? '#FFD700' : '#00FF99');
         ctx.beginPath();
         ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Projectile Class
+    // Projectile Class with behavior based on tower type
     class Projectile {
-      constructor(x, y, target) {
+      constructor(x, y, target, type) {
         this.x = x;
         this.y = y;
         this.target = target;
-        this.speed = 4;
+        this.speed = type === 'sniper' ? 5 : 4;
         this.alive = true;
       }
 
@@ -181,7 +180,7 @@
           currency += 20; // Earn money when enemies are destroyed
           this.alive = false;
 
-          // Randomly drop a power-up
+          // Randomly drop a power-up (money or damage boost)
           if (Math.random() < 0.3) {
             powerUps.push(new PowerUp(this.target.x, this.target.y));
           }
@@ -199,16 +198,17 @@
       }
     }
 
-    // Enemy Class
+    // Enemy Class with multiple types (armored, flying, etc.)
     class Enemy {
       constructor() {
         this.radius = 10;
-        this.health = 100 * wave; // Increase enemy health with each wave
-        this.speed = 1 + (wave * 0.2); // Increase enemy speed with each wave
+        this.health = 100 * wave;
+        this.speed = 1 + (wave * 0.2);
         this.x = path[0].x;
         this.y = path[0].y;
         this.currentPoint = 1;
         this.alive = true;
+        this.type = Math.random() < 0.1 ? 'flying' : 'normal'; // 10% chance to be flying
       }
 
       update() {
@@ -230,14 +230,14 @@
       }
 
       draw() {
-        ctx.fillStyle = '#FF6347'; // Tomato color for enemies
+        ctx.fillStyle = this.type === 'flying' ? '#00BFFF' : '#FF6347'; // Different color for flying enemies
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Power-Up Class
+    // Power-up Class
     class PowerUp {
       constructor(x, y) {
         this.x = x;
