@@ -237,8 +237,8 @@
       projectiles.forEach(p => p.update());
 
       // Remove dead enemies and projectiles
-      enemies.filter(e => e.alive);
-      projectiles.filter(p => p.alive);
+      enemies = enemies.filter(e => e.alive); // Correctly remove dead enemies
+      projectiles = projectiles.filter(p => p.alive); // Correctly remove dead projectiles
 
       // Draw game objects
       enemies.forEach(e => e.draw());
@@ -251,7 +251,6 @@
 
     // Start the game
     function startGame() {
-      // Start spawning enemies
       setInterval(() => {
         if (enemiesRemaining > 0) {
           enemies.push(new Enemy());
@@ -279,7 +278,7 @@
       }
 
       if (!towerFound) {
-        towers.push(new Tower(x, y));
+        towers.push(new Tower(x, y)); // Create new tower at click position
       }
     });
 
