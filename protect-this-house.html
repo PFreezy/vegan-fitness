@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tower Defense Game</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Improved Tower Defense Game</title>
   <style>
     body {
       margin: 0;
@@ -28,7 +28,7 @@
       font-family: 'Roboto', sans-serif;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
     }
-    .score, .time, .level-bar, .currency {
+    .score, .time, .currency, .wave-info, .enemy-counter, .ability-panel {
       margin: 10px 0;
     }
     .level-bar {
@@ -44,6 +44,17 @@
       background: linear-gradient(45deg, #00ff99, #00ccff);
       border-radius: 10px;
     }
+    button {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #666;
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #444;
+    }
   </style>
 </head>
 <body>
@@ -51,35 +62,51 @@
   <div id="ui">
     <div class="score">Score: <span id="scoreCounter">0</span></div>
     <div class="currency">Currency: $<span id="currencyCounter">100</span></div>
-    <div class="time">Time Remaining: <span id="timeCounter">60</span>s</div>
+    <div class="wave-info">Wave: <span id="waveCounter">1</span></div>
+    <div class="enemy-counter">Enemies Remaining: <span id="enemyCounter">0</span></div>
+    <div class="time">Next Wave In: <span id="intermissionTimer">0</span>s</div>
+    <!-- Optional Level Progress Bar for total score or progress tracking -->
     <div class="level-bar">
       <span id="levelProgress"></span>
     </div>
-    <div id="enemyCounter"></div>
+
+    <!-- Controls for special abilities or wave triggers -->
+    <div class="ability-panel">
+      <button id="startNextWaveBtn">Start Next Wave</button>
+      <button id="bombStrikeBtn">Bomb Strike ($100)</button>
+    </div>
   </div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Game State Variables
+    //=======================//
+    //    GAME VARIABLES     //
+    //=======================//
+
     let score = 0;
     let currency = 100;
-    let enemiesRemaining = 10;
-    let gameTime = 60; // Start the countdown at 60 seconds
     let wave = 1;
-    let spawnInterval = 3000; // Interval between enemy spawns
-    let timerInterval;
+    let enemiesRemaining = 0;
 
-    // Initialize the enemies, towers, and power-ups arrays
+    // Wave & spawn controls
+    let currentWaveEnemies = 0;
+    let waveInProgress = false;
+    let waveInterval;       // For spawning enemies in the wave
+    let intermissionTime = 10; // Time before next wave starts automatically
+    let intermissionTimer;  // Intermission countdown
+    let nextWaveTimeout;    // Timeout to automatically start next wave after intermission
+
+    // Arrays to hold game objects
     let enemies = [];
     let towers = [];
     let projectiles = [];
     let powerUps = [];
 
-    // Enemy path points
+    // Path for the enemies
     const path = [
-      { x: 0, y: 300 },
+      { x: 0,   y: 300 },
       { x: 200, y: 300 },
       { x: 200, y: 500 },
       { x: 600, y: 500 },
@@ -87,21 +114,312 @@
       { x: 800, y: 100 }
     ];
 
-    // Countdown timer
-    function updateTime() {
-      if (gameTime > 0) {
-        gameTime--;
-        document.getElementById('timeCounter').textContent = gameTime;
-      } else {
-        alert("Game Over! Time's up!");
-        clearInterval(timerInterval);
+    //=======================//
+    //      GAME CLASSES     //
+    //=======================//
+
+    // TOWER CLASS
+    class Tower {
+      constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.level = 1;
+        
+        // Base stats can vary by type
+        switch (type) {
+          case 'machineGun':
+            this.range = 150;
+            this.fireRate = 30;
+            this.cost = 100;
+            break;
+          case 'sniper':
+            this.range = 300;
+            this.fireRate = 60;
+            this.cost = 150;
+            break;
+          default:
+            // Basic tower
+            this.range = 100;
+            this.fireRate = 45;
+            this.cost = 50;
+            break;
+        }
+
+        this.cooldown = 0;
+        this.upgradeCost = 50;  // Base upgrade cost
+      }
+
+      upgrade() {
+        // We allow multiple upgrades, and the cost grows each time
+        if (currency >= this.upgradeCost) {
+          currency -= this.upgradeCost;
+          this.level++;
+          
+          // Upgrade stats in a unique way
+          this.range += 20;  // +20 range each upgrade
+          
+          // Fire rate improvements (lower is faster)
+          if (this.fireRate > 5) {
+            this.fireRate = Math.max(5, this.fireRate - 5); 
+          }
+          
+          // Increase next upgrade cost
+          this.upgradeCost = Math.round(this.upgradeCost * 1.5);
+        }
+      }
+
+      update() {
+        // Fire at enemies if cooldown allows
+        if (this.cooldown > 0) {
+          this.cooldown--;
+        } else {
+          let target = enemies.find(e => {
+            const dx = e.x - this.x;
+            const dy = e.y - this.y;
+            return Math.sqrt(dx * dx + dy * dy) < this.range && e.alive;
+          });
+          if (target) {
+            projectiles.push(new Projectile(this.x, this.y, target, this.type, this.level));
+            this.cooldown = this.fireRate;
+          }
+        }
+      }
+
+      draw() {
+        // Color and size can represent tower type & level
+        ctx.fillStyle = 
+          this.type === 'machineGun' ? '#FF5722' : 
+          (this.type === 'sniper' ? '#FFD700' : '#00FF99');
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 15 + this.level, 0, Math.PI * 2);
+        ctx.fill();
+
+        // If you want to show tower level text:
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px Arial';
+        ctx.fillText(`Lv.${this.level}`, this.x - 10, this.y + 5);
       }
     }
 
-    // Start the countdown timer
-    timerInterval = setInterval(updateTime, 1000);
+    // PROJECTILE CLASS
+    class Projectile {
+      constructor(x, y, target, type, towerLevel=1) {
+        this.x = x;
+        this.y = y;
+        this.target = target;
+        this.type = type;
+        this.alive = true;
 
-    // Draw enemy path
+        // Speed might scale with tower type or level
+        this.speed = (type === 'sniper') ? 5 + towerLevel * 0.5 : 4 + towerLevel * 0.3;
+
+        // Damage can also scale with tower level
+        // If you'd like different base damage per tower type, add it here
+        this.damage = 20 + (5 * towerLevel);
+      }
+
+      update() {
+        // If the target died before impact, kill the projectile
+        if (!this.target.alive) {
+          this.alive = false;
+          return;
+        }
+
+        const dx = this.target.x - this.x;
+        const dy = this.target.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Check if we reached the target
+        if (dist < this.speed) {
+          // Apply damage to the enemy rather than an instant kill
+          this.target.takeDamage(this.damage);
+
+          // Increase score and currency if enemy actually died
+          if (!this.target.alive) {
+            score += 10;
+            enemiesRemaining--;
+            currency += 20; 
+
+            // Randomly drop a power-up
+            if (Math.random() < 0.3) {
+              powerUps.push(new PowerUp(this.target.x, this.target.y));
+            }
+          }
+          this.alive = false;
+        } else {
+          // Move toward target
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = '#FF5722';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // ENEMY CLASS
+    class Enemy {
+      constructor(wave) {
+        this.radius = 10;
+        // Base health can grow by wave number
+        this.health = 100 + (wave - 1) * 20;  
+        // Speed can also grow slightly by wave
+        this.speed = 1 + (wave - 1) * 0.1;  
+
+        this.x = path[0].x;
+        this.y = path[0].y;
+        this.currentPoint = 1;
+        this.alive = true;
+
+        // 10% chance for flying, or if wave is boss wave, assign boss
+        if (wave % 5 === 0 && Math.random() < 0.2) {
+          this.type = 'boss';
+          this.health *= 3;    // Boss has triple health
+          this.speed *= 1.2;   // Boss a bit faster
+          this.radius = 20;    // Boss is bigger
+        } else {
+          this.type = Math.random() < 0.1 ? 'flying' : 'normal';
+        }
+      }
+
+      takeDamage(damage) {
+        this.health -= damage;
+        if (this.health <= 0) {
+          this.alive = false;
+        }
+      }
+
+      update() {
+        if (!this.alive || this.currentPoint >= path.length) return;
+
+        const target = path[this.currentPoint];
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < this.speed) {
+          this.x = target.x;
+          this.y = target.y;
+          this.currentPoint++;
+
+          // If enemy reaches the end, reduce the player's score/currency or handle "lives"
+          if (this.currentPoint >= path.length) {
+            this.alive = false;
+            enemiesRemaining--;
+            // For example, penalize currency or health:
+            currency = Math.max(0, currency - 10);
+          }
+        } else {
+          this.x += (dx / dist) * this.speed;
+          this.y += (dy / dist) * this.speed;
+        }
+      }
+
+      draw() {
+        let color = '#FF6347';  // Normal
+        if (this.type === 'flying') color = '#00BFFF';
+        if (this.type === 'boss')   color = '#8A2BE2'; 
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Optional health bar
+        ctx.fillStyle = '#000';
+        ctx.fillRect(this.x - 15, this.y - this.radius - 10, 30, 5);
+        ctx.fillStyle = '#0F0';
+        let hpWidth = Math.max(0, (this.health / (100 + (wave - 1) * 20)) * 30);
+        if (this.type === 'boss') {
+          // If it's a boss, the max health is triple, so adjust the ratio
+          hpWidth = Math.max(0, (this.health / ((100 + (wave - 1) * 20) * 3)) * 30);
+        }
+        ctx.fillRect(this.x - 15, this.y - this.radius - 10, hpWidth, 5);
+      }
+    }
+
+    // POWER-UP CLASS
+    class PowerUp {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 10;
+        this.type = Math.random() < 0.5 ? 'money' : 'damageBoost';
+      }
+
+      update() {
+        // If desired, add logic to make power-ups collectible, e.g., by the player or towers
+        // For simplicity, let's let them vanish over time or remain indefinitely
+      }
+
+      draw() {
+        ctx.fillStyle = this.type === 'money' ? '#FFD700' : '#00FF00';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    //=======================//
+    //       GAME LOOP       //
+    //=======================//
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the path
+      drawPath();
+
+      // Update all game objects
+      enemies.forEach(e => e.update());
+      towers.forEach(t => t.update());
+      projectiles.forEach(p => p.update());
+      powerUps.forEach(p => p.update());
+
+      // Clean up dead enemies and projectiles
+      enemies = enemies.filter(e => e.alive);
+      projectiles = projectiles.filter(p => p.alive);
+
+      // Draw everything
+      enemies.forEach(e => e.draw());
+      towers.forEach(t => t.draw());
+      projectiles.forEach(p => p.draw());
+      powerUps.forEach(p => p.draw());
+
+      // Update UI
+      updateUI();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    //=======================//
+    //       UI UPDATES      //
+    //=======================//
+
+    function updateUI() {
+      document.getElementById('scoreCounter').textContent = score;
+      document.getElementById('currencyCounter').textContent = currency;
+      document.getElementById('waveCounter').textContent = wave;
+      document.getElementById('enemyCounter').textContent = enemiesRemaining;
+
+      // Intermission Timer display
+      document.getElementById('intermissionTimer').textContent = waveInProgress ? 0 : intermissionTime;
+
+      // Example progress bar (for overall progress, based on score)
+      const maxScoreForBar = 1000;
+      const progressPercent = Math.min(100, (score / maxScoreForBar) * 100);
+      document.getElementById('levelProgress').style.width = `${progressPercent}%`;
+    }
+
+    //=======================//
+    //   WAVE & PATH LOGIC   //
+    //=======================//
+
     function drawPath() {
       ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
       ctx.lineWidth = 4;
@@ -113,220 +431,140 @@
       ctx.stroke();
     }
 
-    // Basic Tower Class with new types and upgrades
-    class Tower {
-      constructor(x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.range = type === 'machineGun' ? 150 : (type === 'sniper' ? 300 : 100);
-        this.level = 1;
-        this.fireRate = type === 'machineGun' ? 30 : (type === 'sniper' ? 60 : 45);
-        this.cooldown = 0;
-        this.cost = type === 'machineGun' ? 100 : (type === 'sniper' ? 150 : 50);
-      }
+    // Start a wave
+    function startWave() {
+      waveInProgress = true;
+      enemiesRemaining = getEnemiesCountForWave(wave);
+      currentWaveEnemies = enemiesRemaining;
 
-      upgrade() {
-        if (currency >= 50) {
-          this.level++;
-          this.range += 20;
-          this.fireRate = this.type === 'machineGun' ? 20 : (this.type === 'sniper' ? 40 : 30);
-          currency -= 50;
-        }
-      }
-
-      update() {
-        if (this.cooldown > 0) {
-          this.cooldown--;
+      // Spawn enemies at an interval for this wave
+      waveInterval = setInterval(() => {
+        if (currentWaveEnemies > 0) {
+          enemies.push(new Enemy(wave));
+          currentWaveEnemies--;
         } else {
-          let target = enemies.find(e => {
-            const dx = e.x - this.x;
-            const dy = e.y - this.y;
-            return Math.sqrt(dx * dx + dy * dy) < this.range && e.alive;
-          });
-          if (target) {
-            projectiles.push(new Projectile(this.x, this.y, target, this.type));
-            this.cooldown = this.fireRate;
-          }
+          // Done spawning this wave
+          clearInterval(waveInterval);
         }
-      }
+      }, 800); // Spawn one enemy every 0.8s (adjust as desired)
+    }
 
-      draw() {
-        ctx.fillStyle = this.type === 'machineGun' ? '#FF5722' : (this.type === 'sniper' ? '#FFD700' : '#00FF99');
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
-        ctx.fill();
+    // Once wave is done (i.e., all enemies are gone), wait for intermission
+    function endWaveCheck() {
+      if (waveInProgress && enemiesRemaining <= 0 && currentWaveEnemies <= 0) {
+        waveInProgress = false;
+        wave++;
+        // Start intermission
+        startIntermission();
       }
     }
 
-    // Projectile Class with behavior based on tower type
-    class Projectile {
-      constructor(x, y, target, type) {
-        this.x = x;
-        this.y = y;
-        this.target = target;
-        this.speed = type === 'sniper' ? 5 : 4;
-        this.alive = true;
-      }
+    function startIntermission() {
+      intermissionTime = 10; // or however many seconds you like
+      clearTimeout(nextWaveTimeout);
 
-      update() {
-        const dx = this.target.x - this.x;
-        const dy = this.target.y - this.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < this.speed) {
-          this.target.alive = false;
+      // Countdown
+      intermissionTimer = setInterval(() => {
+        intermissionTime--;
+        if (intermissionTime <= 0) {
+          clearInterval(intermissionTimer);
+          // Auto-start next wave
+          startWave();
+        }
+      }, 1000);
+    }
+
+    // Return how many enemies to spawn in a given wave
+    function getEnemiesCountForWave(waveNumber) {
+      // For example, grows linearly. Adjust as desired.
+      return 10 + (waveNumber - 1) * 3;
+    }
+
+    //=======================//
+    //   SPECIAL ABILITIES   //
+    //=======================//
+
+    // Example Bomb Strike: Damages all enemies on screen
+    function bombStrike() {
+      const bombCost = 100;
+      if (currency < bombCost) return;  // Not enough currency
+      currency -= bombCost;
+
+      // Deal a flat damage to all enemies
+      let damage = 50;
+      enemies.forEach(e => {
+        e.takeDamage(damage);
+        if (!e.alive) {
           score += 10;
           enemiesRemaining--;
-          currency += 20; // Earn money when enemies are destroyed
-          this.alive = false;
-
-          // Randomly drop a power-up (money or damage boost)
-          if (Math.random() < 0.3) {
-            powerUps.push(new PowerUp(this.target.x, this.target.y));
-          }
-        } else {
-          this.x += (dx / dist) * this.speed;
-          this.y += (dy / dist) * this.speed;
+          currency += 20; // Additional reward
         }
-      }
-
-      draw() {
-        ctx.fillStyle = '#FF5722'; // Bright red projectiles
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      });
     }
 
-    // Enemy Class with multiple types (armored, flying, etc.)
-    class Enemy {
-      constructor() {
-        this.radius = 10;
-        this.health = 100 * wave;
-        this.speed = 1 + (wave * 0.2);
-        this.x = path[0].x;
-        this.y = path[0].y;
-        this.currentPoint = 1;
-        this.alive = true;
-        this.type = Math.random() < 0.1 ? 'flying' : 'normal'; // 10% chance to be flying
-      }
+    //=======================//
+    //      START GAME       //
+    //=======================//
 
-      update() {
-        if (this.currentPoint >= path.length) return;
-
-        const target = path[this.currentPoint];
-        const dx = target.x - this.x;
-        const dy = target.y - this.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < this.speed) {
-          this.x = target.x;
-          this.y = target.y;
-          this.currentPoint++;
-        } else {
-          this.x += (dx / dist) * this.speed;
-          this.y += (dy / dist) * this.speed;
-        }
-      }
-
-      draw() {
-        ctx.fillStyle = this.type === 'flying' ? '#00BFFF' : '#FF6347'; // Different color for flying enemies
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Power-up Class
-    class PowerUp {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.radius = 10;
-        this.type = Math.random() < 0.5 ? 'money' : 'damageBoost'; // Money or damage boost
-      }
-
-      update() {
-        // Logic for collecting power-ups could be added here
-      }
-
-      draw() {
-        ctx.fillStyle = this.type === 'money' ? '#FFD700' : '#00FF00'; // Gold for money, green for boost
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Game Loop
-    function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw the enemy path
-      drawPath();
-
-      // Update game objects
-      enemies.forEach(e => e.update());
-      towers.forEach(t => t.update());
-      projectiles.forEach(p => p.update());
-      powerUps.forEach(p => p.update());
-
-      // Remove dead enemies and projectiles
-      enemies = enemies.filter(e => e.alive);
-      projectiles = projectiles.filter(p => p.alive);
-
-      // Draw game objects
-      enemies.forEach(e => e.draw());
-      towers.forEach(t => t.draw());
-      projectiles.forEach(p => p.draw());
-      powerUps.forEach(p => p.draw());
-
-      updateUI();
-      requestAnimationFrame(gameLoop);
-    }
-
-    // Update the UI
-    function updateUI() {
-      document.getElementById('scoreCounter').textContent = score;
-      document.getElementById('currencyCounter').textContent = currency;
-      document.getElementById('enemyCounter').textContent = `Enemies Remaining: ${enemiesRemaining}`;
-      const progress = Math.max(0, (score / 100) * 100);
-      document.getElementById('levelProgress').style.width = `${progress}%`;
-    }
-
-    // Start the game
     function startGame() {
-      setInterval(() => {
-        if (enemiesRemaining > 0) {
-          enemies.push(new Enemy());
-        }
-      }, spawnInterval); // Spawn new enemy every few seconds, decreasing as waves progress
-
+      // Initially start the first wave or start with an intermission if you want
+      startWave();
       gameLoop();
+
+      // Check wave end condition
+      setInterval(endWaveCheck, 500); // Check every 0.5s if wave ended
     }
 
-    // User interaction (place towers)
-    canvas.addEventListener('click', function(event) {
-      const x = event.clientX - canvas.offsetLeft;
-      const y = event.clientY - canvas.offsetTop;
+    //=======================//
+    //    USER INTERACTION   //
+    //=======================//
 
+    // Placing or Upgrading Towers on Canvas Click
+    canvas.addEventListener('click', function(event) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // Check if we clicked on an existing tower first
       let towerFound = false;
       for (let tower of towers) {
         const dx = tower.x - x;
         const dy = tower.y - y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 20) {
+        if (distance < 20 + tower.level) {
           towerFound = true;
           tower.upgrade();
           break;
         }
       }
 
-      if (!towerFound && currency >= 50) {
-        towers.push(new Tower(x, y, 'machineGun')); // Create a machine gun tower
-        currency -= 50; // Deduct cost for new tower
+      // If we didn't click on a tower, place a new tower if we have enough currency
+      if (!towerFound) {
+        // For demonstration, place a machine gun tower
+        // Or you can alternate or let the user choose
+        const cost = 50; // Basic tower cost
+        if (currency >= cost) {
+          towers.push(new Tower(x, y, 'machineGun'));
+          currency -= cost;
+        }
       }
     });
+
+    // Button to start next wave immediately (if not in wave)
+    document.getElementById('startNextWaveBtn').addEventListener('click', function() {
+      if (!waveInProgress) {
+        clearInterval(intermissionTimer);
+        intermissionTime = 0;
+        startWave();
+      }
+    });
+
+    // Button for Bomb Strike
+    document.getElementById('bombStrikeBtn').addEventListener('click', bombStrike);
+
+    //=======================//
+    //         INIT          //
+    //=======================//
 
     startGame();
   </script>
