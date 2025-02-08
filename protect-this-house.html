@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Improved Tower Defense Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Enhanced Tower Defense Game</title>
   <style>
     body {
       margin: 0;
@@ -28,8 +28,8 @@
       font-family: 'Roboto', sans-serif;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
     }
-    .score, .time, .currency, .wave-info, .enemy-counter, .ability-panel {
-      margin: 10px 0;
+    .score, .currency, .wave-info, .enemy-counter, .time, .base-health, .ability-panel, .speed-control {
+      margin: 8px 0;
     }
     .level-bar {
       width: 200px;
@@ -62,18 +62,24 @@
   <div id="ui">
     <div class="score">Score: <span id="scoreCounter">0</span></div>
     <div class="currency">Currency: $<span id="currencyCounter">100</span></div>
+    <div class="base-health">Base Health: <span id="baseHealthCounter">20</span></div>
     <div class="wave-info">Wave: <span id="waveCounter">1</span></div>
     <div class="enemy-counter">Enemies Remaining: <span id="enemyCounter">0</span></div>
     <div class="time">Next Wave In: <span id="intermissionTimer">0</span>s</div>
-    <!-- Optional Level Progress Bar for total score or progress tracking -->
     <div class="level-bar">
       <span id="levelProgress"></span>
     </div>
 
-    <!-- Controls for special abilities or wave triggers -->
     <div class="ability-panel">
       <button id="startNextWaveBtn">Start Next Wave</button>
       <button id="bombStrikeBtn">Bomb Strike ($100)</button>
+    </div>
+
+    <div class="speed-control">
+      Game Speed:
+      <button id="speed1Btn">1×</button>
+      <button id="speed2Btn">2×</button>
+      <button id="speed3Btn">3×</button>
     </div>
   </div>
 
@@ -87,24 +93,29 @@
 
     let score = 0;
     let currency = 100;
+    let baseHealth = 20; // Player "lives"
+
     let wave = 1;
     let enemiesRemaining = 0;
-
-    // Wave & spawn controls
     let currentWaveEnemies = 0;
     let waveInProgress = false;
-    let waveInterval;       // For spawning enemies in the wave
-    let intermissionTime = 10; // Time before next wave starts automatically
-    let intermissionTimer;  // Intermission countdown
-    let nextWaveTimeout;    // Timeout to automatically start next wave after intermission
 
-    // Arrays to hold game objects
+    // Wave & spawn controls
+    let waveInterval;
+    let intermissionTime = 10; 
+    let intermissionTimer;
+    let nextWaveTimeout;
+
+    // Speed Control
+    let speedMultiplier = 1; // 1×, 2×, 3×
+
+    // Arrays for game objects
     let enemies = [];
     let towers = [];
     let projectiles = [];
     let powerUps = [];
 
-    // Path for the enemies
+    // Enemy path
     const path = [
       { x: 0,   y: 300 },
       { x: 200, y: 300 },
@@ -113,6 +124,9 @@
       { x: 600, y: 100 },
       { x: 800, y: 100 }
     ];
+
+    // For consistent movement timing, track last frame time
+    let lastTime = 0;
 
     //=======================//
     //      GAME CLASSES     //
@@ -125,86 +139,142 @@
         this.y = y;
         this.type = type;
         this.level = 1;
-        
+        this.targetMode = 'first'; // 'first', 'strong', 'closest', etc.
+        this.totalCostSpent = 0;
+
         // Base stats can vary by type
         switch (type) {
           case 'machineGun':
             this.range = 150;
-            this.fireRate = 30;
-            this.cost = 100;
+            this.fireRate = 30; // frames between shots
+            this.baseCost = 100;
             break;
           case 'sniper':
             this.range = 300;
             this.fireRate = 60;
-            this.cost = 150;
+            this.baseCost = 150;
+            break;
+          case 'slow':
+            this.range = 130;
+            this.fireRate = 50;
+            this.baseCost = 120;
             break;
           default:
             // Basic tower
             this.range = 100;
             this.fireRate = 45;
-            this.cost = 50;
+            this.baseCost = 50;
             break;
         }
-
         this.cooldown = 0;
-        this.upgradeCost = 50;  // Base upgrade cost
+        this.upgradeCost = 50;  
+        this.totalCostSpent += this.baseCost;
+      }
+
+      // Cycle through targeting modes
+      cycleTargetMode() {
+        const modes = ['first', 'strong', 'closest'];
+        const currentIndex = modes.indexOf(this.targetMode);
+        this.targetMode = modes[(currentIndex + 1) % modes.length];
       }
 
       upgrade() {
-        // We allow multiple upgrades, and the cost grows each time
         if (currency >= this.upgradeCost) {
           currency -= this.upgradeCost;
           this.level++;
-          
-          // Upgrade stats in a unique way
-          this.range += 20;  // +20 range each upgrade
-          
-          // Fire rate improvements (lower is faster)
+          this.range += 20;
+          // Fire rate improvement
           if (this.fireRate > 5) {
-            this.fireRate = Math.max(5, this.fireRate - 5); 
+            this.fireRate = Math.max(5, this.fireRate - 5);
           }
-          
           // Increase next upgrade cost
           this.upgradeCost = Math.round(this.upgradeCost * 1.5);
+
+          // Add the upgrade cost to totalSpent
+          this.totalCostSpent += this.upgradeCost;
+        }
+      }
+
+      sell() {
+        // Refund half the total spent cost
+        const sellValue = Math.floor(this.totalCostSpent / 2);
+        currency += sellValue;
+      }
+
+      getTarget() {
+        // Based on targetMode, pick an enemy from the enemies array
+        let possibleTargets = enemies.filter(e => {
+          const dx = e.x - this.x;
+          const dy = e.y - this.y;
+          return e.alive && Math.sqrt(dx * dx + dy * dy) < this.range;
+        });
+
+        if (possibleTargets.length === 0) return null;
+
+        switch (this.targetMode) {
+          case 'strong':
+            // highest health among those in range
+            possibleTargets.sort((a, b) => b.health - a.health);
+            return possibleTargets[0];
+          case 'closest':
+            // enemy closest to tower
+            possibleTargets.sort((a, b) => {
+              let distA = distance(this.x, this.y, a.x, a.y);
+              let distB = distance(this.x, this.y, b.x, b.y);
+              return distA - distB;
+            });
+            return possibleTargets[0];
+          case 'first':
+          default:
+            // The one with the greatest progress on the path
+            // e.currentPoint is a rough measure, but we can also check distance to path end
+            possibleTargets.sort((a, b) => b.currentPoint - a.currentPoint);
+            return possibleTargets[0];
         }
       }
 
       update() {
-        // Fire at enemies if cooldown allows
         if (this.cooldown > 0) {
-          this.cooldown--;
+          this.cooldown -= speedMultiplier;
+          if (this.cooldown < 0) this.cooldown = 0;
         } else {
-          let target = enemies.find(e => {
-            const dx = e.x - this.x;
-            const dy = e.y - this.y;
-            return Math.sqrt(dx * dx + dy * dy) < this.range && e.alive;
-          });
+          const target = this.getTarget();
           if (target) {
-            projectiles.push(new Projectile(this.x, this.y, target, this.type, this.level));
+            projectiles.push(
+              new Projectile(this.x, this.y, target, this.type, this.level)
+            );
             this.cooldown = this.fireRate;
           }
         }
       }
 
       draw() {
-        // Color and size can represent tower type & level
-        ctx.fillStyle = 
-          this.type === 'machineGun' ? '#FF5722' : 
-          (this.type === 'sniper' ? '#FFD700' : '#00FF99');
+        // Color based on type
+        let color;
+        switch (this.type) {
+          case 'machineGun': color = '#FF5722'; break;
+          case 'sniper':     color = '#FFD700'; break;
+          case 'slow':       color = '#87CEFA'; break;
+          default:           color = '#00FF99'; break;
+        }
+        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, 15 + this.level, 0, Math.PI * 2);
         ctx.fill();
 
-        // If you want to show tower level text:
+        // Tower level text
         ctx.fillStyle = '#fff';
         ctx.font = '12px Arial';
         ctx.fillText(`Lv.${this.level}`, this.x - 10, this.y + 5);
+
+        // Show targeting mode visually
+        ctx.fillText(this.targetMode[0].toUpperCase(), this.x - 4, this.y - 20);
       }
     }
 
     // PROJECTILE CLASS
     class Projectile {
-      constructor(x, y, target, type, towerLevel=1) {
+      constructor(x, y, target, type, towerLevel = 1) {
         this.x = x;
         this.y = y;
         this.target = target;
@@ -212,11 +282,23 @@
         this.alive = true;
 
         // Speed might scale with tower type or level
-        this.speed = (type === 'sniper') ? 5 + towerLevel * 0.5 : 4 + towerLevel * 0.3;
+        this.baseSpeed = (type === 'sniper') ? 5 : 4;
+        this.speed = this.baseSpeed + towerLevel * 0.3;
 
-        // Damage can also scale with tower level
-        // If you'd like different base damage per tower type, add it here
-        this.damage = 20 + (5 * towerLevel);
+        // Damage scaling
+        if (type === 'slow') {
+          // Very low direct damage
+          this.damage = 5 + towerLevel * 2;
+          this.slowFactor = 0.5; // reduce enemy speed by 50%
+          this.slowDuration = 120; // frames
+        } else if (type === 'sniper') {
+          this.damage = 40 + towerLevel * 5;
+        } else if (type === 'machineGun') {
+          this.damage = 15 + towerLevel * 3;
+        } else {
+          // Basic
+          this.damage = 10 + towerLevel * 2;
+        }
       }
 
       update() {
@@ -226,16 +308,22 @@
           return;
         }
 
+        // Move the projectile
         const dx = this.target.x - this.x;
         const dy = this.target.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
+        const moveDist = this.speed * speedMultiplier;
 
-        // Check if we reached the target
-        if (dist < this.speed) {
-          // Apply damage to the enemy rather than an instant kill
+        if (dist < moveDist) {
+          // Impact the enemy
           this.target.takeDamage(this.damage);
 
-          // Increase score and currency if enemy actually died
+          // If slow tower, apply slow (unless flying is immune)
+          if (this.type === 'slow' && this.target.type !== 'flying') {
+            this.target.applySlow(this.slowFactor, this.slowDuration);
+          }
+
+          // If the enemy died
           if (!this.target.alive) {
             score += 10;
             enemiesRemaining--;
@@ -248,14 +336,13 @@
           }
           this.alive = false;
         } else {
-          // Move toward target
-          this.x += (dx / dist) * this.speed;
-          this.y += (dy / dist) * this.speed;
+          this.x += (dx / dist) * moveDist;
+          this.y += (dy / dist) * moveDist;
         }
       }
 
       draw() {
-        ctx.fillStyle = '#FF5722';
+        ctx.fillStyle = (this.type === 'slow') ? '#87CEFA' : '#FF5722';
         ctx.beginPath();
         ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
         ctx.fill();
@@ -264,27 +351,56 @@
 
     // ENEMY CLASS
     class Enemy {
-      constructor(wave) {
-        this.radius = 10;
-        // Base health can grow by wave number
-        this.health = 100 + (wave - 1) * 20;  
-        // Speed can also grow slightly by wave
-        this.speed = 1 + (wave - 1) * 0.1;  
-
+      constructor(waveNumber) {
+        this.alive = true;
+        this.currentPoint = 1;
         this.x = path[0].x;
         this.y = path[0].y;
-        this.currentPoint = 1;
-        this.alive = true;
 
-        // 10% chance for flying, or if wave is boss wave, assign boss
-        if (wave % 5 === 0 && Math.random() < 0.2) {
+        // Some random logic for enemy type beyond just normal/flying/boss
+        // Weighted distribution of "heavy", "flying", "normal" (boss check below).
+        const rnd = Math.random();
+        if (waveNumber % 5 === 0 && Math.random() < 0.2) {
           this.type = 'boss';
-          this.health *= 3;    // Boss has triple health
-          this.speed *= 1.2;   // Boss a bit faster
-          this.radius = 20;    // Boss is bigger
+        } else if (rnd < 0.15) {
+          this.type = 'heavy';
+        } else if (rnd < 0.30) {
+          this.type = 'flying';
         } else {
-          this.type = Math.random() < 0.1 ? 'flying' : 'normal';
+          this.type = 'normal';
         }
+
+        // Base stats can scale by wave
+        const waveFactor = waveNumber - 1;
+        this.baseSpeed = 1 + waveFactor * 0.1;
+        let baseHealth = 100 + waveFactor * 20;
+
+        switch (this.type) {
+          case 'boss':
+            this.baseSpeed *= 1.2;
+            baseHealth *= 3;
+            this.radius = 20;
+            break;
+          case 'heavy':
+            this.baseSpeed *= 0.7; // slower
+            baseHealth *= 1.8;     // more health
+            this.radius = 12;
+            break;
+          case 'flying':
+            // same speed or faster, can be immune to slow
+            this.baseSpeed *= 1.5;
+            this.radius = 10;
+            break;
+          default:
+            // normal
+            this.radius = 10;
+            break;
+        }
+
+        this.health = baseHealth;
+        this.speed = this.baseSpeed; // current speed may adjust if slowed
+        this.slowTimer = 0;
+        this.slowFactor = 0; // how much speed is reduced
       }
 
       takeDamage(damage) {
@@ -294,52 +410,79 @@
         }
       }
 
+      applySlow(factor, duration) {
+        // If enemy is flying or boss, you could skip slow
+        if (this.type === 'flying') return; // flying enemies are immune
+        // Refresh slow effect
+        this.slowFactor = Math.max(this.slowFactor, factor); // keep the largest slow if re-hit
+        this.slowTimer = duration;
+      }
+
       update() {
         if (!this.alive || this.currentPoint >= path.length) return;
 
+        // Handle slow effect
+        if (this.slowTimer > 0) {
+          this.slowTimer -= speedMultiplier;
+          this.speed = this.baseSpeed * (1 - this.slowFactor);
+          if (this.slowTimer <= 0) {
+            // slow ended
+            this.slowFactor = 0;
+            this.speed = this.baseSpeed;
+          }
+        }
+
+        // Move enemy
         const target = path[this.currentPoint];
         const dx = target.x - this.x;
         const dy = target.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
+        const moveDist = this.speed * speedMultiplier;
 
-        if (dist < this.speed) {
+        if (dist < moveDist) {
           this.x = target.x;
           this.y = target.y;
           this.currentPoint++;
 
-          // If enemy reaches the end, reduce the player's score/currency or handle "lives"
+          // If enemy reaches the end
           if (this.currentPoint >= path.length) {
             this.alive = false;
             enemiesRemaining--;
-            // For example, penalize currency or health:
-            currency = Math.max(0, currency - 10);
+            baseHealth--;
+            if (baseHealth <= 0) {
+              gameOver();
+            }
           }
         } else {
-          this.x += (dx / dist) * this.speed;
-          this.y += (dy / dist) * this.speed;
+          this.x += (dx / dist) * moveDist;
+          this.y += (dy / dist) * moveDist;
         }
       }
 
       draw() {
         let color = '#FF6347';  // Normal
         if (this.type === 'flying') color = '#00BFFF';
-        if (this.type === 'boss')   color = '#8A2BE2'; 
+        if (this.type === 'boss')   color = '#8A2BE2';
+        if (this.type === 'heavy')  color = '#696969';
 
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Optional health bar
+        // Health bar
         ctx.fillStyle = '#000';
         ctx.fillRect(this.x - 15, this.y - this.radius - 10, 30, 5);
-        ctx.fillStyle = '#0F0';
-        let hpWidth = Math.max(0, (this.health / (100 + (wave - 1) * 20)) * 30);
-        if (this.type === 'boss') {
-          // If it's a boss, the max health is triple, so adjust the ratio
-          hpWidth = Math.max(0, (this.health / ((100 + (wave - 1) * 20) * 3)) * 30);
+
+        let maxHealth;
+        switch (this.type) {
+          case 'boss': maxHealth = (100 + (wave - 1) * 20) * 3; break;
+          case 'heavy': maxHealth = (100 + (wave - 1) * 20) * 1.8; break;
+          default: maxHealth = 100 + (wave - 1) * 20; break;
         }
-        ctx.fillRect(this.x - 15, this.y - this.radius - 10, hpWidth, 5);
+        const hpRatio = Math.max(0, this.health / maxHealth);
+        ctx.fillStyle = '#0F0';
+        ctx.fillRect(this.x - 15, this.y - this.radius - 10, hpRatio * 30, 5);
       }
     }
 
@@ -353,8 +496,7 @@
       }
 
       update() {
-        // If desired, add logic to make power-ups collectible, e.g., by the player or towers
-        // For simplicity, let's let them vanish over time or remain indefinitely
+        // Could add logic for collecting or disappearance
       }
 
       draw() {
@@ -366,22 +508,41 @@
     }
 
     //=======================//
+    //     GAME FUNCTIONS    //
+    //=======================//
+
+    function distance(x1, y1, x2, y2) {
+      return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    }
+
+    function gameOver() {
+      alert("Game Over! Your base has been destroyed!");
+      // Optionally reload or stop the game
+      window.location.reload();
+    }
+
+    //=======================//
     //       GAME LOOP       //
     //=======================//
 
-    function gameLoop() {
+    function gameLoop(timestamp) {
+      // Calculate time difference for potential advanced usage (e.g., dt).
+      if (!lastTime) lastTime = timestamp;
+      const dt = (timestamp - lastTime) / 1000; // in seconds (not heavily used here but possible)
+      lastTime = timestamp;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw the path
       drawPath();
 
-      // Update all game objects
+      // Update objects
       enemies.forEach(e => e.update());
       towers.forEach(t => t.update());
       projectiles.forEach(p => p.update());
       powerUps.forEach(p => p.update());
 
-      // Clean up dead enemies and projectiles
+      // Cleanup
       enemies = enemies.filter(e => e.alive);
       projectiles = projectiles.filter(p => p.alive);
 
@@ -391,34 +552,27 @@
       projectiles.forEach(p => p.draw());
       powerUps.forEach(p => p.draw());
 
-      // Update UI
       updateUI();
-
       requestAnimationFrame(gameLoop);
     }
 
     //=======================//
-    //       UI UPDATES      //
+    //        UI UPDATES     //
     //=======================//
 
     function updateUI() {
       document.getElementById('scoreCounter').textContent = score;
       document.getElementById('currencyCounter').textContent = currency;
+      document.getElementById('baseHealthCounter').textContent = baseHealth;
       document.getElementById('waveCounter').textContent = wave;
       document.getElementById('enemyCounter').textContent = enemiesRemaining;
-
-      // Intermission Timer display
       document.getElementById('intermissionTimer').textContent = waveInProgress ? 0 : intermissionTime;
 
-      // Example progress bar (for overall progress, based on score)
-      const maxScoreForBar = 1000;
+      // Simple progress bar for total score
+      const maxScoreForBar = 2000;
       const progressPercent = Math.min(100, (score / maxScoreForBar) * 100);
       document.getElementById('levelProgress').style.width = `${progressPercent}%`;
     }
-
-    //=======================//
-    //   WAVE & PATH LOGIC   //
-    //=======================//
 
     function drawPath() {
       ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
@@ -431,126 +585,155 @@
       ctx.stroke();
     }
 
-    // Start a wave
+    //=======================//
+    //     WAVE LOGIC        //
+    //=======================//
+
     function startWave() {
       waveInProgress = true;
       enemiesRemaining = getEnemiesCountForWave(wave);
       currentWaveEnemies = enemiesRemaining;
 
-      // Spawn enemies at an interval for this wave
       waveInterval = setInterval(() => {
         if (currentWaveEnemies > 0) {
-          enemies.push(new Enemy(wave));
+          spawnOneEnemy();
           currentWaveEnemies--;
         } else {
-          // Done spawning this wave
           clearInterval(waveInterval);
         }
-      }, 800); // Spawn one enemy every 0.8s (adjust as desired)
+      }, 700); // spawn frequency
     }
 
-    // Once wave is done (i.e., all enemies are gone), wait for intermission
+    function spawnOneEnemy() {
+      enemies.push(new Enemy(wave));
+    }
+
+    function getEnemiesCountForWave(waveNumber) {
+      // Example formula
+      return 10 + (waveNumber - 1) * 4;
+    }
+
     function endWaveCheck() {
       if (waveInProgress && enemiesRemaining <= 0 && currentWaveEnemies <= 0) {
         waveInProgress = false;
         wave++;
-        // Start intermission
         startIntermission();
       }
     }
 
     function startIntermission() {
-      intermissionTime = 10; // or however many seconds you like
+      intermissionTime = 10;
       clearTimeout(nextWaveTimeout);
 
-      // Countdown
       intermissionTimer = setInterval(() => {
         intermissionTime--;
         if (intermissionTime <= 0) {
           clearInterval(intermissionTimer);
-          // Auto-start next wave
           startWave();
         }
       }, 1000);
-    }
-
-    // Return how many enemies to spawn in a given wave
-    function getEnemiesCountForWave(waveNumber) {
-      // For example, grows linearly. Adjust as desired.
-      return 10 + (waveNumber - 1) * 3;
     }
 
     //=======================//
     //   SPECIAL ABILITIES   //
     //=======================//
 
-    // Example Bomb Strike: Damages all enemies on screen
     function bombStrike() {
       const bombCost = 100;
-      if (currency < bombCost) return;  // Not enough currency
+      if (currency < bombCost) return;
       currency -= bombCost;
 
-      // Deal a flat damage to all enemies
-      let damage = 50;
+      const bombDamage = 50;
       enemies.forEach(e => {
-        e.takeDamage(damage);
+        e.takeDamage(bombDamage);
         if (!e.alive) {
           score += 10;
           enemiesRemaining--;
-          currency += 20; // Additional reward
+          currency += 20;
         }
       });
     }
 
     //=======================//
-    //      START GAME       //
+    //   INITIAL GAME START  //
     //=======================//
 
     function startGame() {
-      // Initially start the first wave or start with an intermission if you want
       startWave();
-      gameLoop();
+      requestAnimationFrame(gameLoop);
 
-      // Check wave end condition
-      setInterval(endWaveCheck, 500); // Check every 0.5s if wave ended
+      // Repeatedly check if wave ended
+      setInterval(endWaveCheck, 500);
     }
 
     //=======================//
     //    USER INTERACTION   //
     //=======================//
 
-    // Placing or Upgrading Towers on Canvas Click
+    // Place or Upgrade/Sell Towers with Mouse Click
     canvas.addEventListener('click', function(event) {
       const rect = canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
 
-      // Check if we clicked on an existing tower first
+      const shiftPressed = event.shiftKey; 
       let towerFound = false;
-      for (let tower of towers) {
+
+      for (let i = 0; i < towers.length; i++) {
+        const tower = towers[i];
         const dx = tower.x - x;
         const dy = tower.y - y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 20 + tower.level) {
+        const distanceToTower = Math.sqrt(dx * dx + dy * dy);
+        if (distanceToTower < 20 + tower.level) {
           towerFound = true;
-          tower.upgrade();
+          
+          if (shiftPressed) {
+            // SHIFT-click: cycle targeting mode or sell?
+            // Let's define: SHIFT + left click => cycle targeting
+            // SHIFT + right click => sell. But we only have left-click in this example.
+            // We'll do: SHIFT-click => cycle targeting mode once, SHIFT+CTRL-click => sell 
+            // or simpler approach: SHIFT-click => cycle targeting mode, SHIFT + Double-click => sell
+            // For a simpler demonstration, let's cycle target mode on SHIFT-click, 
+            // hold ALT or something to sell. We'll keep it straightforward here:
+            if (event.ctrlKey) {
+              // SHIFT + CTRL => Sell
+              tower.sell();
+              towers.splice(i, 1);
+            } else {
+              // SHIFT => cycle targeting
+              tower.cycleTargetMode();
+            }
+          } else {
+            // Regular click => upgrade
+            tower.upgrade();
+          }
           break;
         }
       }
 
-      // If we didn't click on a tower, place a new tower if we have enough currency
+      // If no tower found, place a new tower (example: cycle through tower types or just pick one)
       if (!towerFound) {
-        // For demonstration, place a machine gun tower
-        // Or you can alternate or let the user choose
-        const cost = 50; // Basic tower cost
-        if (currency >= cost) {
-          towers.push(new Tower(x, y, 'machineGun'));
-          currency -= cost;
+        // Let’s just place a “machineGun” or let’s randomly choose?
+        // For demonstration, we can pick from a few types or let the user interface handle it:
+        
+        // Example: Always place a slow tower if we have enough currency, else machineGun
+        const placeSlow = Math.random() < 0.3; // 30% chance to place slow tower
+        let typeToPlace = placeSlow ? 'slow' : 'machineGun';
+        let costToPlace = placeSlow ? 120 : 100; 
+        // Or override if not enough currency
+        if (currency < costToPlace) {
+          typeToPlace = 'basic';
+          costToPlace = 50;
+        }
+
+        if (currency >= costToPlace) {
+          towers.push(new Tower(x, y, typeToPlace));
+          currency -= costToPlace;
         }
       }
     });
 
-    // Button to start next wave immediately (if not in wave)
+    // Wave & Ability buttons
     document.getElementById('startNextWaveBtn').addEventListener('click', function() {
       if (!waveInProgress) {
         clearInterval(intermissionTimer);
@@ -558,14 +741,14 @@
         startWave();
       }
     });
-
-    // Button for Bomb Strike
     document.getElementById('bombStrikeBtn').addEventListener('click', bombStrike);
 
-    //=======================//
-    //         INIT          //
-    //=======================//
+    // Speed control buttons
+    document.getElementById('speed1Btn').addEventListener('click', () => { speedMultiplier = 1; });
+    document.getElementById('speed2Btn').addEventListener('click', () => { speedMultiplier = 2; });
+    document.getElementById('speed3Btn').addEventListener('click', () => { speedMultiplier = 3; });
 
+    // Start the game
     startGame();
   </script>
 </body>
