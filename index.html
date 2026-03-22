@@ -3,297 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vegan Hypertrophy</title>
-    <meta name="description" content="Vegan Hypertrophy: Science-driven framework to maximize your fitness and nutrition potential with plant-based strategies.">
-    <meta name="keywords" content="vegan, hypertrophy, fitness, plant-based nutrition, muscle growth, calories, meal planning, fitness hacks">
+    <title>Vegan Hypertrophy | Build Muscle on a Vegan Diet</title>
+    <meta name="description" content="Build muscle on a vegan diet with science-backed, practical guidance. Get a free starter guide, learn proven principles, and train with less guesswork.">
+    <meta name="keywords" content="vegan hypertrophy, build muscle vegan, plant-based muscle gain, vegan bulk cut recomp, science-based fitness">
     <meta name="author" content="Vegan Hypertrophy">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        /* Navigation Bar */
-        nav {
-            background: linear-gradient(to bottom, #2E8B57, black);
-            padding: 10px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap; /* Wrap links for smaller screens */
-            gap: 10px;
-        }
-        nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 16px; /* Smaller for mobile */
-            font-weight: bold;
-            text-transform: uppercase;
-            padding: 5px 10px; /* Touch-friendly */
-        }
-        nav a:hover {
-            color: #A5D6A7;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: url('homepage.jpg') no-repeat center center/cover;
-            filter: brightness(0.85);
-            height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 20%, rgba(0, 0, 0, 0.4) 70%, rgba(0, 0, 0, 0.2) 100%);
-            z-index: -1;
-        }
-        .hero h1 {
-            font-size: 40px;
-            font-weight: bold;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
-        }
-        .hero p {
-            font-size: 18px;
-            margin: 20px 0;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
-        }
-        .hero a {
-            text-decoration: none;
-            background-color: #008CBA;
-            color: white;
-            padding: 10px 30px;
-            border-radius: 5px;
-            font-size: 16px;
-            margin: 5px 0;
-        }
-        .hero a:hover {
-            background-color: #005f73;
-        }
-
-        /* Section Styling */
-        section {
-            padding: 20px 10px;
-            margin: 10px auto;
-            max-width: 90%; /* Shrink for smaller screens */
-            border-radius: 5px;
-            background: linear-gradient(to bottom, #2E8B57, #000000);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            color: #ffffff;
-            text-align: center;
-        }
-        section h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        section p {
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        section a {
-            text-decoration: none;
-            color: white;
-            background-color: #046C04;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        section a:hover {
-            background-color: #2E8B57;
-        }
-
-       .articles-preview {
-        display: flex;
-        flex-wrap: wrap; /* Ensure wrapping on smaller screens */
-        justify-content: center;
-        gap: 20px; /* Add space between cards */
-    }
-
-    .article-card {
-        width: 200px;
-        text-align: center;
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .article-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .article-card img {
-        width: 100%;
-        height: 120px;
-        object-fit: cover;
-    }
-
-    .article-card p {
-        margin: 10px;
-        font-size: 14px;
-        color: #2E8B57;
-        font-weight: bold;
-    }
-
-    /* Button Styling */
-    section a {
-        display: inline-block;
-        margin-top: 20px; /* Add space above and below the button */
-        text-decoration: none;
-        background-color: #2E8B57;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-    }
-
-    section a:hover {
-        background-color: #046C04;
-    }
-
-    /* Responsive Layout */
-    @media (min-width: 768px) {
-        .articles-preview {
-            gap: 30px; /* Increase spacing for larger screens */
-        }
-
-        .article-card {
-            width: 250px; /* Wider cards on larger screens */
-        }
-
-        section a {
-            margin-top: 30px; /* Adjust spacing for buttons */
-        }
-
-        /* Footer */
-        footer {
-            background-color: #2E8B57;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-        }
-
-        /* Media Queries for Larger Screens */
-        @media (min-width: 768px) {
-            nav ul {
-                gap: 20px;
-            }
-            nav a {
-                font-size: 18px;
-            }
-            .hero h1 {
-                font-size: 60px;
-            }
-            .hero p {
-                font-size: 24px;
-            }
-            section {
-                max-width: 1200px;
-                padding: 40px 20px;
-            }
-            section h2 {
-                font-size: 28px;
-            }
-            section p {
-                font-size: 16px;
-            }
-            .articles-preview {
-                gap: 20px;
-            }
-            .article-card {
-                width: 200px;
-            }
-            .article-card img {
-                height: 120px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!-- Navigation Bar -->
+<body class="home-page">
     <nav>
         <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="basic-principles.html">Basic Principles</a></li>
-            <li><a href="calories-in.html">Calories In</a></li>
-            <li><a href="calories-out.html">Calories Out</a></li>
-            <li><a href="hackz.html">Hackz</a></li>
+            <li><a href="index.html" aria-current="page">Home</a></li>
+            <li><a href="start-here.html">Start Here</a></li>
+            <li><a href="basic-principles.html">Guides</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
         </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>Vegan Hypertrophy</h1>
-        <p>Science-driven framework to maximize potential and minimize effort.</p>
-        <a href="basic-principles.html">Learn More</a>
-        <a href="calories-in.html">Get Started</a>
-    </div>
-
-    <!-- Sections -->
-    <section>
-        <h2>Basic Principles</h2>
-        <p>Explore the foundational principles for vegan hypertrophy, including nutrition, meal planning, and macronutrients.</p>
-        <div class="articles-preview">
-            <a href="declaration-of-intent.html">
-                <div class="article-card">
-                    <img src="declaration-of-intent-image.jpg" alt="Declaration of Intent">
-                    <p>Declaration of Intent</p>
-                </div>
-            </a>
-            <a href="harajuku-moment.html">
-                <div class="article-card">
-                    <img src="harajuku-moment.jpg" alt="The Harajuku Moment">
-                    <p>The Harajuku Moment</p>
-                </div>
-            </a>
+    <header class="hero hero-home">
+        <p class="hero-eyebrow">Science-backed vegan muscle building</p>
+        <h1>Build Muscle on a Vegan Diet Without Guesswork</h1>
+        <p class="hero-subheadline">
+            Practical training and nutrition guidance for people who want to bulk, cut, or recomp using proven principles—not hype.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="#lead-magnet">Get the Free Vegan Muscle Starter Guide</a>
+            <a class="btn btn-secondary" href="#featured-guides">Browse Featured Guides</a>
         </div>
-        <a href="basic-principles.html">Explore More</a>
-    </section>
+    </header>
 
-    <section>
-        <h2>Calories In</h2>
-        <p>Learn how to optimize your caloric intake for muscle growth, performance, and recovery on a plant-based diet.</p>
-        <a href="calories-in.html">Read More</a>
-    </section>
+    <main class="container home-main">
+        <section class="section-block section-surface" id="who-this-is-for">
+            <div class="section-heading">
+                <p class="section-kicker">Who this is for</p>
+                <h2>Guidance designed for real-world vegan lifters</h2>
+            </div>
+            <div class="info-grid">
+                <article class="info-card">
+                    <h3>Beginners who want a clear start</h3>
+                    <p>If fitness advice feels overwhelming, start with a simple system grounded in fundamentals you can apply this week.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Vegans trying to build muscle</h3>
+                    <p>Learn how to hit protein targets, structure meals, and train effectively on a fully plant-based diet.</p>
+                </article>
+                <article class="info-card">
+                    <h3>People bulking, cutting, or recomposing</h3>
+                    <p>Use practical calorie and training frameworks to move toward your goal with less trial and error.</p>
+                </article>
+            </div>
+        </section>
 
-    <section>
-        <h2>Calories Out</h2>
-        <p>Understand how to burn calories effectively with tailored workouts and daily activities that align with your goals.</p>
-        <a href="calories-out.html">Read More</a>
-    </section>
+        <section class="section-block section-accent" id="featured-guides">
+            <div class="section-heading">
+                <p class="section-kicker">Featured guides</p>
+                <h2>Start with the cornerstone content</h2>
+                <p>These guides cover principles, calorie strategy, and behavior systems that drive long-term progress.</p>
+            </div>
+            <div class="articles-preview home-guides-grid">
+                <a href="declaration-of-intent.html" class="article-card article-card-link">
+                    <img src="declaration-of-intent-image.jpg" alt="Declaration of Intent article">
+                    <div class="article-card-content">
+                        <h3>Declaration of Intent</h3>
+                        <p>Understand the mission and philosophy behind the framework.</p>
+                    </div>
+                </a>
+                <a href="the-holy-trinity.html" class="article-card article-card-link">
+                    <img src="the-holy-trinity.jpg" alt="The Holy Trinity article">
+                    <div class="article-card-content">
+                        <h3>The Holy Trinity</h3>
+                        <p>Master the three pillars: training, nutrition, and recovery.</p>
+                    </div>
+                </a>
+                <a href="status-quo-and-setting-goals.html" class="article-card article-card-link">
+                    <img src="status-quo-and-setting-goals.jpg" alt="Status Quo and Setting Goals article">
+                    <div class="article-card-content">
+                        <h3>Status Quo and Setting Goals</h3>
+                        <p>Measure what matters and set realistic targets.</p>
+                    </div>
+                </a>
+                <a href="framing.html" class="article-card article-card-link">
+                    <img src="framing.jpg" alt="Framing article">
+                    <div class="article-card-content">
+                        <h3>Framing</h3>
+                        <p>Build a mindset that supports consistency during hard phases.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="section-actions">
+                <a class="btn btn-primary" href="basic-principles.html">Read the Basic Principles Series</a>
+                <a class="btn btn-secondary" href="calories-in.html">Explore Calories In Guides</a>
+            </div>
+        </section>
 
-    <section>
-        <h2>Hackz</h2>
-        <p>Discover science-backed hacks to enhance your fitness journey, from supplements to timing your workouts and meals.</p>
-        <a href="hackz.html">Read More</a>
-    </section>
+        <section class="section-block lead-magnet" id="lead-magnet">
+            <div class="section-heading">
+                <p class="section-kicker">Free offer</p>
+                <h2>Get the Vegan Muscle Starter Guide</h2>
+                <p>A concise PDF with protein targets, calorie setup, and a simple weekly training template to help you start strong.</p>
+            </div>
+            <form class="lead-form" action="#" method="post">
+                <label class="sr-only" for="email">Email address</label>
+                <input id="email" name="email" type="email" placeholder="Enter your email" aria-label="Email address">
+                <button type="submit">Send Me the Free Guide</button>
+            </form>
+            <p class="microcopy">We send practical, evidence-informed updates. Unsubscribe anytime.</p>
+        </section>
 
-    <!-- Footer -->
-    <footer>
-        &copy; 2024 Vegan Hypertrophy. All rights reserved.
-    </footer>
+        <section class="section-block section-surface" id="tools-and-guides">
+            <div class="section-heading">
+                <p class="section-kicker">Tools & guides</p>
+                <h2>Free resources now, productized tools coming next</h2>
+            </div>
+            <div class="resource-grid">
+                <article class="resource-card">
+                    <p class="resource-status">Available now</p>
+                    <h3>Nutrition and calorie strategy guides</h3>
+                    <p>Use educational content to plan intake, track progress, and make better weekly adjustments.</p>
+                    <a href="calories-in.html">Use the calorie strategy guides</a>
+                </article>
+                <article class="resource-card">
+                    <p class="resource-status">Available now</p>
+                    <h3>Training and energy expenditure guides</h3>
+                    <p>Apply practical tactics for resistance training, movement, and recovery.</p>
+                    <a href="calories-out.html">Use the training & output guides</a>
+                </article>
+                <article class="resource-card">
+                    <p class="resource-status">Coming soon</p>
+                    <h3>Vegan hypertrophy templates and calculators</h3>
+                    <p>Planned tools: progression trackers, macro presets, and goal-specific starter protocols.</p>
+                    <a href="#lead-magnet">Join the list for release updates</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-block final-cta" id="start-now">
+            <h2>Ready to train smarter on a vegan diet?</h2>
+            <p>Start with the free guide, then work through the cornerstone articles in order.</p>
+            <div class="section-actions">
+                <a class="btn btn-primary" href="#lead-magnet">Get the Free Starter Guide</a>
+                <a class="btn btn-secondary" href="basic-principles.html">Start with Basic Principles</a>
+            </div>
+        </section>
+    </main>
+
+      <footer class="site-footer footer-complete">
+    <div class="container footer-grid footer-grid-complete">
+      <div class="footer-brand">
+        <h3>Vegan Hypertrophy</h3>
+        <p>Science-backed guidance for building muscle on a vegan diet.</p>
+      </div>
+      <div>
+        <h3>Navigate</h3>
+        <ul>
+          <li><a href="start-here.html">Start Here</a></li>
+          <li><a href="basic-principles.html">Guides</a></li>
+          <li><a href="resources.html">Resources</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Company</h3>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="legal.html">Legal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Newsletter</h3>
+        <p>Get the free Vegan Muscle Starter Guide and future updates.</p>
+        <a class="footer-cta" href="index.html#lead-magnet">Get the Free Starter Guide</a>
+      </div>
+    </div>
+    <div class="container legal-links" aria-label="Legal links">
+      <a href="legal.html#privacy">Privacy</a>
+      <a href="legal.html#terms">Terms</a>
+      <a href="legal.html#affiliate-disclosure">Affiliate Disclosure</a>
+      <a href="legal.html#medical-disclaimer">Disclaimer</a>
+    </div>
+    <p class="footer-legal">&copy; 2026 Vegan Hypertrophy. All rights reserved.</p>
+  </footer>
 </body>
 </html>
