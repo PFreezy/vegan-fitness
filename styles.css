@@ -1350,6 +1350,7 @@ body > nav.site-nav {
   width: 100%;
   max-width: none !important;
   margin: 0;
+  padding: clamp(72px, 8vw, 118px) max(48px, calc((100vw - 1180px)/2)) !important;
   display: grid;
   flex-direction: initial;
   justify-content: initial;
@@ -1413,7 +1414,10 @@ body > footer.site-footer { position: static !important; width: auto !important;
 }
 
 @media (max-width: 680px) {
-  .home-story > header.story-hero { grid-template-columns: 1fr; }
+  .home-story > header.story-hero {
+    padding: 64px 20px 48px !important;
+    grid-template-columns: 1fr;
+  }
   .home-story > header.story-hero h1 {
     font-size: clamp(3.2rem, 15vw, 4.8rem) !important;
   }
