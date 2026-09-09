@@ -18,7 +18,8 @@ const VH_DOMAINS = [
   { number: '04', title: 'Tools & Protocols', url: 'hackz.html', description: 'Optimize the edges.' }
 ];
 
-const pathName = window.location.pathname.split('/').pop() || 'index.html';
+const rawPathName = window.location.pathname.split('/').pop() || 'index.html';
+const pathName = rawPathName.includes('.') ? rawPathName : `${rawPathName}.html`;
 const currentArticle = VH_ARTICLES.find((article) => article.url === pathName);
 
 function navMarkup() {
