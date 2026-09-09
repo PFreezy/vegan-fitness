@@ -150,6 +150,44 @@ function renderLibrary() {
   }).join('');
 }
 
+function renderHome() {
+  if (pathName !== 'index.html') return;
+
+  const system = document.querySelector('[data-home-system]');
+  if (system) {
+    system.innerHTML = VH_DOMAINS.map((domain) => `
+      <a href="${domain.url}" class="system-stage">
+        <span>${domain.number}</span>
+        <div><h3>${domain.title}</h3><p>${domain.description}</p></div>
+        <i aria-hidden="true">→</i>
+      </a>`).join('');
+  }
+
+  const curriculum = document.querySelector('[data-home-curriculum]');
+  if (curriculum) {
+    curriculum.innerHTML = VH_ARTICLES.slice(0, 3).map((article) => `
+      <li>
+        <span>${String(article.curriculumIndex).padStart(2, '0')}</span>
+        <div><h3><a href="${article.url}">${article.title}</a></h3><p>${article.description}</p></div>
+        <small>${article.minutes} min read</small>
+      </li>`).join('');
+  }
+
+  const reading = document.querySelector('[data-home-reading]');
+  if (reading) {
+    const featured = ['controlling-weight.html', 'status-quo-and-setting-goals.html', 'framing.html']
+      .map((url) => VH_ARTICLES.find((article) => article.url === url));
+    reading.innerHTML = featured.map((article) => `
+      <a href="${article.url}" class="reading-row">
+        <h3>${article.title}</h3>
+        <p>${article.description}</p>
+        <span>${article.domain}</span>
+        <small>${article.minutes} min read</small>
+        <i aria-hidden="true">→</i>
+      </a>`).join('');
+  }
+}
+
 function renderStartHere() {
   if (pathName !== 'start-here.html') return;
   const list = document.querySelector('.path-list');
@@ -173,6 +211,7 @@ function enhanceDomainPage() {
 
 document.addEventListener('DOMContentLoaded', () => {
   installShell();
+  renderHome();
   renderLibrary();
   renderStartHere();
   enhanceDomainPage();
